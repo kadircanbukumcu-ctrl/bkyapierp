@@ -1,1181 +1,279 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>BK YAPI - Mobil ERP & CRM</title>
-  <meta name="theme-color" content="#090d16">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    
-    :root {
-      --bg-dark: #090d16;
-      --card-bg: #111827;
-      --card-border: #1f293d;
-      --orange: #ff6b00;
-      --orange-glow: rgba(255, 107, 0, 0.25);
-      --amber: #f59e0b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-
-    body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 96px; font-size: 13px; }
-    
-    /* Top Header */
-    .header { background: rgba(9, 13, 22, 0.95); backdrop-filter: blur(10px); padding: 14px 18px; position: sticky; top: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); }
-    .logo-container { display: flex; align-items: center; gap: 12px; }
-    .logo-badge { width: 40px; height: 40px; background: linear-gradient(135deg, #ff6b00, #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #000; box-shadow: 0 4px 15px var(--orange-glow); border: 1px solid #fed7aa; }
-    .logo-text h1 { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; color: #fff; }
-    .logo-text p { font-size: 10px; color: var(--orange); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-    .header-badge { font-size: 10px; background: #1c2438; color: #38bdf8; padding: 4px 10px; border-radius: 20px; font-weight: 800; border: 1px solid #2d3748; }
-
-    /* Layout & Cards */
-    .container { max-width: 500px; margin: 0 auto; padding: 14px; }
-    .card { background: var(--card-bg); border-radius: 18px; padding: 16px; border: 1px solid var(--card-border); margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-    .card-glow { border: 1px solid rgba(255, 107, 0, 0.3); box-shadow: 0 4px 25px rgba(255, 107, 0, 0.12); }
-    
-    /* Interactive Buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 11px 16px; font-size: 13px; font-weight: 800; border-radius: 12px; border: none; cursor: pointer; transition: 0.15s ease; gap: 6px; }
-    .btn:active { transform: scale(0.96); }
-    .btn-orange { background: linear-gradient(135deg, #ff6b00, #ea580c); color: #fff; box-shadow: 0 4px 15px var(--orange-glow); }
-    .btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
-    .btn-danger { background: #e11d48; color: white; }
-    .btn-success { background: #059669; color: white; }
-    .btn-block { width: 100%; }
-
-    /* Inputs */
-    .form-group { margin-bottom: 12px; }
-    .form-label { display: block; font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--card-border); border-radius: 12px; font-size: 13px; background: #0d121f; color: #fff; outline: none; transition: 0.2s; }
-    .form-control:focus { border-color: var(--orange); box-shadow: 0 0 10px var(--orange-glow); }
-
-    /* Bottom Dock Bar */
-    .bottom-nav { position: fixed; bottom: 12px; left: 14px; right: 14px; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border: 1px solid #2d3748; border-radius: 24px; display: flex; justify-content: space-around; padding: 10px 4px; z-index: 60; max-width: 472px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; background: none; border: none; font-size: 10px; font-weight: 800; color: #64748b; padding: 4px 0; cursor: pointer; transition: 0.2s; gap: 3px; }
-    .nav-btn.active { color: var(--orange); }
-    .nav-btn.active svg { stroke: var(--orange); filter: drop-shadow(0 0 6px var(--orange)); }
-
-    /* Horizontal Pills */
-    .pill-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
-    .pill-btn { white-space: nowrap; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; border: 1px solid var(--card-border); background: #131b2e; color: #94a3b8; cursor: pointer; }
-    .pill-btn.active { background: linear-gradient(135deg, #ff6b00, #ea580c); color: white; border-color: #ff6b00; box-shadow: 0 2px 10px var(--orange-glow); }
-
-    /* Toggle Switch */
-    .toggle-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #0d121f; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 12px; }
-    .toggle-switch { position: relative; width: 44px; height: 24px; }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; inset: 0; background-color: #334155; transition: .2s; border-radius: 24px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--orange); }
-    input:checked + .slider:before { transform: translateX(20px); }
-
-    /* Modals */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 14px; backdrop-filter: blur(5px); }
-    .modal-box { background: #111827; border: 1px solid #2d3748; border-radius: 22px; width: 100%; max-width: 450px; max-height: 88vh; overflow-y: auto; padding: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f293d; padding-bottom: 10px; margin-bottom: 14px; }
-
-    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
-    .st-taslak { background: #1e293b; color: #94a3b8; }
-    .st-gonderildi { background: rgba(37,99,235,0.2); color: #60a5fa; border: 1px solid rgba(37,99,235,0.4); }
-    .st-onaylandi { background: rgba(5,150,105,0.2); color: #34d399; border: 1px solid rgba(5,150,105,0.4); }
-    .st-reddedildi { background: rgba(225,29,72,0.2); color: #fb7185; border: 1px solid rgba(225,29,72,0.4); }
-
-    .hidden { display: none !important; }
-
-    /* Print & PDF */
-    @media print {
-      body * { visibility: hidden; }
-      #printArea, #printArea * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; padding: 0 !important; }
-      .no-print { display: none !important; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- App Header -->
-  <header class="header">
-    <div class="logo-container">
-      <div class="logo-badge">BK</div>
-      <div class="logo-text">
-        <h1>BK YAPI</h1>
-        <p>Enterprise ERP Portal</p>
-      </div>
-    </div>
-    <div class="header-badge">v4.0 Pro</div>
-  </header>
-
-  <main class="container">
-
-    <!-- 1. DASHBOARD -->
-    <section id="view-dashboard">
-      <div class="card card-glow" style="background: linear-gradient(135deg, #111827 0%, #1a1512 100%);">
-        <span style="font-size: 11px; color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;">Toplam Teklif Portföyü</span>
-        <h2 id="dash-volume" style="font-size: 28px; font-weight: 900; margin-top: 4px; font-family: monospace; color: #fff;">0,00 ₺</h2>
-        <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-          <span>Onaylanan Hacim:</span>
-          <span id="dash-approved-vol" style="color: #34d399; font-weight: 800;">0,00 ₺</span>
-        </div>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px;">
-        <div class="card" style="margin-bottom:0; text-align: center; padding: 12px 8px;">
-          <span style="font-size: 10px; color: var(--text-muted); font-weight: 800;">Müşteri</span>
-          <p id="dash-cust-count" style="font-size: 22px; font-weight: 900; color: #fff; margin-top: 4px;">0</p>
-        </div>
-        <div class="card" style="margin-bottom:0; text-align: center; padding: 12px 8px;">
-          <span style="font-size: 10px; color: var(--text-muted); font-weight: 800;">Malzeme</span>
-          <p id="dash-mat-count" style="font-size: 22px; font-weight: 900; color: var(--orange); margin-top: 4px;">0</p>
-        </div>
-        <div class="card" style="margin-bottom:0; text-align: center; padding: 12px 8px;">
-          <span style="font-size: 10px; color: var(--text-muted); font-weight: 800;">Teklifler</span>
-          <p id="dash-quote-count" style="font-size: 22px; font-weight: 900; color: #38bdf8; margin-top: 4px;">0</p>
-        </div>
-      </div>
-
-      <button id="btn-dash-new-quote" class="btn btn-orange btn-block" style="padding: 14px; font-size: 14px; margin-bottom: 16px;">
-        ⚡ Hızlı Teklif Oluştur
-      </button>
-
-      <div class="card">
-        <h3 style="font-size: 11px; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Son Teklifler</h3>
-        <div id="dash-recent-quotes"></div>
-      </div>
-    </section>
-
-    <!-- 2. MÜŞTERİLER -->
-    <section id="view-customers" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h2 style="font-size: 17px; font-weight: 900; color: #fff;">Müşteri Rehberi</h2>
-        <button id="btn-open-cust-modal" class="btn btn-orange" style="padding: 8px 14px;">+ Yeni Müşteri</button>
-      </div>
-      <input type="text" id="search-cust" placeholder="🔍 Müşteri adı veya telefon ara..." class="form-control" style="margin-bottom: 12px;">
-      <div id="customer-list-container"></div>
-    </section>
-
-    <!-- 3. ENVANTER & GRUPLAR -->
-    <section id="view-inventory" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <div>
-          <h2 style="font-size: 17px; font-weight: 900; color: #fff;">Malzeme Envanteri</h2>
-          <p style="font-size: 10px; color: var(--text-muted);">Grup bazlı fiyat listesi</p>
-        </div>
-        <div style="display: flex; gap: 6px;">
-          <button id="btn-open-group-modal" class="btn btn-secondary" style="padding: 8px 12px;">Gruplar</button>
-          <button id="btn-open-mat-modal" class="btn btn-orange" style="padding: 8px 12px;">+ Malzeme</button>
-        </div>
-      </div>
-
-      <input type="text" id="search-mat" placeholder="🔍 Malzeme adı ara..." class="form-control" style="margin-bottom: 12px;">
-      <div id="inventory-group-pills" class="pill-bar"></div>
-      <div id="inventory-list-container"></div>
-    </section>
-
-    <!-- 4. TEKLİFLER LİSTESİ -->
-    <section id="view-quotes" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h2 style="font-size: 17px; font-weight: 900; color: #fff;">Teklif Portföyü</h2>
-        <button id="btn-open-quote-builder" class="btn btn-orange" style="padding: 8px 14px;">+ Teklif Ver</button>
-      </div>
-      <input type="text" id="search-quotes" placeholder="🔍 Teklif no veya firma ara..." class="form-control" style="margin-bottom: 12px;">
-      <div id="quotes-list-container"></div>
-    </section>
-
-    <!-- 5. TEKLİF HAZIRLAMA (BUILDER) -->
-    <section id="view-builder" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">
-        <button id="btn-builder-cancel" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;">← İptal</button>
-        <span id="builder-quote-code" style="font-weight: 900; font-size: 14px; color: var(--orange); font-family: monospace;">BK-2026-0001</span>
-        <button id="btn-builder-save" class="btn btn-orange" style="padding: 7px 16px; font-size: 12px;">Kaydet</button>
-      </div>
-
-      <!-- Müşteri ve Durum -->
-      <div class="card" style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
-        <div>
-          <label class="form-label">Müşteri Seçin</label>
-          <select id="builder-customer-select" class="form-control font-bold"></select>
-        </div>
-        <div>
-          <label class="form-label">Durum</label>
-          <select id="builder-status-select" class="form-control font-bold">
-            <option value="taslak">Taslak</option>
-            <option value="gonderildi" selected>Gönderildi</option>
-            <option value="onaylandi">Onaylandı</option>
-            <option value="reddedildi">Reddedildi</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- FİYAT GİZLE / GÖSTER TOGGLE (İSTEDİĞİNİZ ÖZELLİK) -->
-      <div class="toggle-wrapper">
-        <div>
-          <strong style="color: #fff; font-size: 12px; display: block;">Müşteri Çıktısında Fiyatları Gizle</strong>
-          <span style="font-size: 10px; color: var(--text-muted);">Açılırsa PDF'te birim fiyatlar ve satır tutarları gizlenir (Teknik keşif listesi olur)</span>
-        </div>
-        <label class="toggle-switch">
-          <input type="checkbox" id="toggle-hide-prices">
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <!-- Malzeme Kalemleri -->
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <label class="form-label" style="margin-bottom:0;">Teklif Malzemeleri</label>
-          <button id="btn-open-select-mat" class="btn btn-secondary" style="font-size: 11px; padding: 5px 10px; color: var(--orange); border-color: rgba(255,107,0,0.3);">+ Envanterden Seç</button>
-        </div>
-        <div id="builder-items-box"></div>
-      </div>
-
-      <!-- Kâr / Fiyat Artışı -->
-      <div class="card" style="background: rgba(255, 107, 0, 0.05); border-color: rgba(255, 107, 0, 0.3); display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <span style="font-size: 12px; font-weight: 900; color: var(--orange); display: block;">Kâr / Fiyat Artış Oranı (%)</span>
-          <span style="font-size: 10px; color: var(--text-muted);">PDF çıktısında asla görünmez</span>
-        </div>
-        <input type="number" id="builder-profit" value="0" min="0" class="form-control" style="width: 70px; text-align: center; font-weight: 900; color: var(--orange); font-size: 14px;">
-      </div>
-
-      <!-- İskonto & KDV -->
-      <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div>
-          <label class="form-label">İskonto (TL)</label>
-          <input type="number" id="builder-discount" value="0" min="0" class="form-control font-bold">
-        </div>
-        <div>
-          <label class="form-label">KDV Oranı (%)</label>
-          <select id="builder-vat" class="form-control font-bold">
-            <option value="0">%0 Muaf</option>
-            <option value="1">%1</option>
-            <option value="10">%10</option>
-            <option value="20" selected>%20</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Ödeme Koşulları -->
-      <div class="card">
-        <label class="form-label">Ödeme Yöntemi</label>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px;">
-          <button id="pay-opt-cash" class="btn btn-orange" style="font-size: 11px;">Peşin</button>
-          <button id="pay-opt-card" class="btn btn-secondary" style="font-size: 11px;">Kredi Kartı</button>
-          <button id="pay-opt-senet" class="btn btn-secondary" style="font-size: 11px;">Senet</button>
-        </div>
-
-        <!-- Kart Taksit -->
-        <div id="box-card-options" class="hidden" style="padding-top: 10px; border-top: 1px solid var(--card-border);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span style="font-size: 11px; font-weight: 800; color: #fff;">Taksit Sayısı:</span>
-            <select id="builder-cc-installment" class="form-control" style="width: 145px; font-weight: bold;"></select>
-          </div>
-          <div id="cc-schedule-box" style="background: #0d121f; border-radius: 10px; padding: 8px; font-size: 11px; border: 1px solid var(--card-border);"></div>
-        </div>
-
-        <!-- Senet Taksit -->
-        <div id="box-senet-options" class="hidden" style="padding-top: 10px; border-top: 1px solid var(--card-border);">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-            <div>
-              <label class="form-label">Peşinat Tutarı (TL)</label>
-              <input type="number" id="builder-senet-down" value="0" class="form-control font-bold">
-            </div>
-            <div>
-              <label class="form-label">Vade (Ay)</label>
-              <select id="builder-senet-months" class="form-control font-bold">
-                <option value="1">1 Ay</option><option value="2">2 Ay</option><option value="3">3 Ay</option>
-                <option value="6" selected>6 Ay</option><option value="9">9 Ay</option><option value="12">12 Ay</option>
-              </select>
-            </div>
-          </div>
-          <div id="senet-schedule-box" style="background: #0d121f; border-radius: 10px; padding: 8px; font-size: 11px; border: 1px solid var(--card-border);"></div>
-        </div>
-      </div>
-
-      <!-- Finansal Toplam Kartı -->
-      <div class="card card-glow" style="background: #0d121f;">
-        <div style="display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;">
-          <span>Ara Toplam:</span><span id="txt-calc-subtotal">0,00 ₺</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;">
-          <span>KDV Tutarı:</span><span id="txt-calc-vat">0,00 ₺</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;">
-          <span>Vade / Farkı:</span><span id="txt-calc-interest">0,00 ₺</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 8px;">
-          <span style="color: #fff;">Genel Toplam:</span>
-          <span id="txt-calc-grand" style="color: var(--orange); font-family: monospace;">0,00 ₺</span>
-        </div>
-        <div id="box-calc-monthly" class="hidden" style="text-align: right; color: #38bdf8; font-weight: 800; font-size: 11px; margin-top: 4px;">
-          Aylık Taksit: <span id="txt-calc-monthly">0,00 ₺</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. AYARLAR -->
-    <section id="view-settings" class="hidden">
-      <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 12px;">Sistem Ayarları</h2>
-      <div class="card">
-        <label class="form-label">Senet Aylık Vade Farkı Oranı (%)</label>
-        <input type="number" id="setting-senet-rate" value="2.5" step="0.1" class="form-control" style="margin-bottom: 10px;">
-        <button id="btn-save-settings" class="btn btn-orange btn-block">Ayarları Güncelle</button>
-      </div>
-
-      <div class="card">
-        <label class="form-label">Veri Yedekleme ve Taşıma</label>
-        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Cihaz değiştiğinde verilerinizi kaybetmemek için tek tıkla yedeğinizi indirin.</p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <button id="btn-export-data" class="btn btn-secondary">Yedek İndir (JSON)</button>
-          <button id="btn-import-trigger" class="btn btn-secondary">Yedek Yükle</button>
-        </div>
-        <input type="file" id="file-import-input" accept=".json" class="hidden">
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODALLER -->
-  <!-- Modal: Grup Yönetimi -->
-  <div id="modal-groups" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Grupları Düzenle</h3>
-        <button id="btn-close-group-modal" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
-      </div>
-      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-        <input type="text" id="input-new-group-name" placeholder="Yeni grup adı..." class="form-control">
-        <button id="btn-save-new-group" class="btn btn-orange">Ekle</button>
-      </div>
-      <div id="modal-group-list"></div>
-    </div>
-  </div>
-
-  <!-- Modal: Malzeme Ekle -->
-  <div id="modal-material" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Yeni Malzeme</h3>
-        <button id="btn-close-mat-modal" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
-      </div>
-      <div class="form-group"><label class="form-label">Grup</label><select id="input-mat-group-select" class="form-control"></select></div>
-      <div class="form-group"><label class="form-label">Malzeme Tanımı</label><input type="text" id="input-mat-name" class="form-control"></div>
-      <div class="form-group"><label class="form-label">Satış Fiyatı (TL)</label><input type="number" id="input-mat-price" class="form-control font-bold"></div>
-      <button id="btn-save-new-mat" class="btn btn-orange btn-block">Kaydet</button>
-    </div>
-  </div>
-
-  <!-- Modal: Müşteri Ekle -->
-  <div id="modal-customer" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Yeni Müşteri</h3>
-        <button id="btn-close-cust-modal" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
-      </div>
-      <div class="form-group"><input type="text" id="input-cust-name" placeholder="Firma Adı *" class="form-control"></div>
-      <div class="form-group"><input type="text" id="input-cust-person" placeholder="Yetkili Kişi" class="form-control"></div>
-      <div class="form-group"><input type="text" id="input-cust-phone" placeholder="Telefon (WhatsApp) *" class="form-control"></div>
-      <div class="form-group"><input type="text" id="input-cust-address" placeholder="Şantiye / Adres" class="form-control"></div>
-      <button id="btn-save-new-cust" class="btn btn-orange btn-block">Kaydet</button>
-    </div>
-  </div>
-
-  <!-- Modal: Envanter Seçim -->
-  <div id="modal-select-item" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Envanterden Kalem Seç</h3>
-        <button id="btn-close-select-mat" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
-      </div>
-      <div id="select-mat-pills" class="pill-bar"></div>
-      <div id="select-mat-list" style="max-height: 50vh; overflow-y: auto;"></div>
-    </div>
-  </div>
-
-  <!-- Modal: PDF & Yazdırma Çıktısı -->
-  <div id="modal-pdf" class="modal-overlay hidden">
-    <div class="modal-box" style="max-width: 620px;">
-      <div class="modal-header no-print">
-        <span style="font-weight: 900; font-size: 13px; color: #fff;">Resmi Teklif Belgesi</span>
-        <div style="display: flex; gap: 6px;">
-          <button id="btn-pdf-whatsapp" class="btn btn-success" style="font-size: 11px; padding: 6px 12px;">WhatsApp</button>
-          <button onclick="window.print()" class="btn btn-orange" style="font-size: 11px; padding: 6px 12px;">Yazdır</button>
-          <button id="btn-close-pdf" class="btn btn-secondary" style="font-size: 11px; padding: 6px 10px;">✕</button>
-        </div>
-      </div>
-      <div id="printArea" style="padding: 8px; font-size: 11px;"></div>
-    </div>
-  </div>
-
-  <!-- Floating Bottom App Navigation (Mobil Dock) -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" data-tab="dashboard">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-      <span>Panel</span>
-    </button>
-    <button class="nav-btn" data-tab="customers">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
-      <span>Müşteriler</span>
-    </button>
-    <button class="nav-btn" data-tab="inventory">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-      <span>Envanter</span>
-    </button>
-    <button class="nav-btn" data-tab="quotes">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-      <span>Teklifler</span>
-    </button>
-    <button class="nav-btn" data-tab="settings">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      <span>Ayarlar</span>
-    </button>
-  </nav>
-
-  <!-- JAVASCRIPT ÇEKİRDEĞİ -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const defaultCcRates = { 1: 0, 2: 2.5, 3: 4.5, 4: 6.0, 5: 7.5, 6: 9.0, 7: 11.0, 8: 12.5, 9: 14.0, 10: 15.5, 11: 17.0, 12: 18.5 };
-
-      let state = {
-        groups: JSON.parse(localStorage.getItem('bk_groups') || '[]'),
-        materials: JSON.parse(localStorage.getItem('bk_materials') || '[]'),
-        customers: JSON.parse(localStorage.getItem('bk_customers') || '[]'),
-        quotes: JSON.parse(localStorage.getItem('bk_quotes') || '[]'),
-        senetRate: parseFloat(localStorage.getItem('bk_senet_rate') || '2.5'),
-        ccRates: JSON.parse(localStorage.getItem('bk_cc_rates') || JSON.stringify(defaultCcRates)),
-        activeInventoryGroup: 'all',
-        builderItems: [],
-        paymentMethod: 'cash',
-        hidePricesInQuote: false,
-        calculated: {}
-      };
-
-      if (state.groups.length === 0) {
-        state.groups = [
-          { id: '1', name: 'Kaba İnşaat & Demir' },
-          { id: '2', name: 'Elektrik & Aydınlatma' },
-          { id: '3', name: 'Boya & Yalıtım' }
-        ];
-        saveAll();
-      }
-
-      function saveAll() {
-        localStorage.setItem('bk_groups', JSON.stringify(state.groups));
-        localStorage.setItem('bk_materials', JSON.stringify(state.materials));
-        localStorage.setItem('bk_customers', JSON.stringify(state.customers));
-        localStorage.setItem('bk_quotes', JSON.stringify(state.quotes));
-        localStorage.setItem('bk_senet_rate', state.senetRate.toString());
-        localStorage.setItem('bk_cc_rates', JSON.stringify(state.ccRates));
-      }
-
-      function switchTab(target) {
-        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-        const el = document.getElementById('view-' + target);
-        if (el) el.classList.remove('hidden');
-
-        document.querySelectorAll('.nav-btn').forEach(b => {
-          b.classList.toggle('active', b.dataset.tab === target);
-        });
-
-        if (target === 'dashboard') renderDashboard();
-        if (target === 'customers') renderCustomers();
-        if (target === 'inventory') renderInventory();
-        if (target === 'quotes') renderQuotes();
-        if (target === 'builder') initBuilder();
-      }
-
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.onclick = () => switchTab(btn.dataset.tab);
-      });
-
-      document.getElementById('btn-dash-new-quote').onclick = () => switchTab('builder');
-      document.getElementById('btn-open-quote-builder').onclick = () => switchTab('builder');
-      document.getElementById('btn-builder-cancel').onclick = () => switchTab('quotes');
-
-      // DASHBOARD
-      function renderDashboard() {
-        document.getElementById('dash-cust-count').textContent = state.customers.length;
-        document.getElementById('dash-mat-count').textContent = state.materials.length;
-        document.getElementById('dash-quote-count').textContent = state.quotes.length;
-
-        const totalVol = state.quotes.reduce((acc, q) => acc + (Number(q.grand_total) || 0), 0);
-        document.getElementById('dash-volume').textContent = totalVol.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-
-        const approvedVol = state.quotes.filter(q => q.status === 'onaylandi').reduce((acc, q) => acc + (Number(q.grand_total) || 0), 0);
-        document.getElementById('dash-approved-vol').textContent = approvedVol.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-
-        const rBox = document.getElementById('dash-recent-quotes');
-        if (state.quotes.length === 0) {
-          rBox.innerHTML = '<div style="text-align:center; padding:12px; font-size:11px; color:#64748b;">Henüz teklif kaydı yok.</div>';
-          return;
-        }
-
-        rBox.innerHTML = state.quotes.slice(0, 3).map(q => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #1f293d; font-size:11px;">
-            <div>
-              <strong style="color:#fff; display:block;">${q.quote_number}</strong>
-              <span style="color:#94a3b8;">${q.customer_snapshot?.company_name || '-'}</span>
-            </div>
-            <div style="text-align:right;">
-              <span style="font-weight:900; font-family:monospace; color:var(--orange);">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
-              <div><span class="status-badge st-${q.status || 'taslak'}">${q.status || 'taslak'}</span></div>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // MÜŞTERİLER
-      function renderCustomers(filterText = '') {
-        const box = document.getElementById('customer-list-container');
-        let list = state.customers;
-
-        if (filterText) {
-          const t = filterText.toLowerCase();
-          list = list.filter(c => c.company_name.toLowerCase().includes(t) || c.phone.includes(t));
-        }
-
-        if (list.length === 0) {
-          box.innerHTML = '<div style="text-align:center; padding:24px; color:#64748b;">Müşteri bulunamadı.</div>';
-          return;
-        }
-
-        box.innerHTML = list.map((c, i) => `
-          <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:12px;">
-            <div>
-              <strong style="font-size:13px; color:#fff; display:block;">${c.company_name}</strong>
-              <span style="font-size:11px; color:#94a3b8;">${c.authorized_person || '-'} • ${c.phone}</span>
-              ${c.address ? `<p style="font-size:10px; color:#64748b; margin-top:2px;">${c.address}</p>` : ''}
-            </div>
-            <button class="btn btn-danger btn-del-cust" data-idx="${i}" style="padding:5px 10px; font-size:10px;">Sil</button>
-          </div>
-        `).join('');
-
-        box.querySelectorAll('.btn-del-cust').forEach(b => {
-          b.onclick = function() {
-            if (confirm('Müşteri silinsin mi?')) {
-              state.customers.splice(this.dataset.idx, 1);
-              saveAll();
-              renderCustomers(document.getElementById('search-cust').value);
-              renderDashboard();
-            }
-          };
-        });
-      }
-
-      document.getElementById('search-cust').oninput = (e) => renderCustomers(e.target.value);
-      document.getElementById('btn-open-cust-modal').onclick = () => document.getElementById('modal-customer').classList.remove('hidden');
-      document.getElementById('btn-close-cust-modal').onclick = () => document.getElementById('modal-customer').classList.add('hidden');
-
-      document.getElementById('btn-save-new-cust').onclick = () => {
-        const name = document.getElementById('input-cust-name').value.trim();
-        const phone = document.getElementById('input-cust-phone').value.trim();
-        const person = document.getElementById('input-cust-person').value.trim();
-        const address = document.getElementById('input-cust-address').value.trim();
-
-        if (!name || !phone) { alert('Firma adı ve telefon zorunludur.'); return; }
-
-        state.customers.unshift({ id: Date.now().toString(), company_name: name, authorized_person: person, phone, address });
-        saveAll();
-
-        document.getElementById('modal-customer').classList.add('hidden');
-        document.getElementById('input-cust-name').value = '';
-        document.getElementById('input-cust-phone').value = '';
-        renderCustomers();
-        renderDashboard();
-      };
-
-      // ENVANTER & GRUP
-      function renderInventory(filterText = '') {
-        const pBox = document.getElementById('inventory-group-pills');
-        pBox.innerHTML = `<button class="pill-btn ${state.activeInventoryGroup === 'all' ? 'active' : ''}" data-gid="all">Tümü (${state.materials.length})</button>` +
-          state.groups.map(g => {
-            const cnt = state.materials.filter(m => m.group_id === g.id).length;
-            return `<button class="pill-btn ${state.activeInventoryGroup === g.id ? 'active' : ''}" data-gid="${g.id}">${g.name} (${cnt})</button>`;
-          }).join('');
-
-        pBox.querySelectorAll('.pill-btn').forEach(btn => {
-          btn.onclick = () => {
-            state.activeInventoryGroup = btn.dataset.gid;
-            renderInventory(document.getElementById('search-mat').value);
-          };
-        });
-
-        let list = state.activeInventoryGroup === 'all' ? state.materials : state.materials.filter(m => m.group_id === state.activeInventoryGroup);
-
-        if (filterText) {
-          list = list.filter(m => m.name.toLowerCase().includes(filterText.toLowerCase()));
-        }
-
-        const mBox = document.getElementById('inventory-list-container');
-        if (list.length === 0) {
-          mBox.innerHTML = '<div style="text-align:center; padding:24px; color:#64748b;">Malzeme bulunamadı.</div>';
-          return;
-        }
-
-        mBox.innerHTML = list.map(m => {
-          const grp = state.groups.find(g => g.id === m.group_id);
-          return `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:12px;">
-              <div>
-                <span style="font-size:9px; font-weight:900; color:var(--orange); text-transform:uppercase; display:block;">${grp ? grp.name : 'Genel'}</span>
-                <strong style="font-size:13px; color:#fff;">${m.name}</strong>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-weight:900; font-size:14px; font-family:monospace; color:#fff;">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
-                <button class="btn btn-danger btn-del-mat" data-id="${m.id}" style="padding:5px 8px; font-size:10px;">Sil</button>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        mBox.querySelectorAll('.btn-del-mat').forEach(b => {
-          b.onclick = function() {
-            if (confirm('Malzeme silinsin mi?')) {
-              state.materials = state.materials.filter(m => m.id !== this.dataset.id);
-              saveAll();
-              renderInventory(document.getElementById('search-mat').value);
-              renderDashboard();
-            }
-          };
-        });
-      }
-
-      document.getElementById('search-mat').oninput = (e) => renderInventory(e.target.value);
-
-      document.getElementById('btn-open-group-modal').onclick = () => {
-        renderGroupModalList();
-        document.getElementById('modal-groups').classList.remove('hidden');
-      };
-      document.getElementById('btn-close-group-modal').onclick = () => document.getElementById('modal-groups').classList.add('hidden');
-
-      function renderGroupModalList() {
-        const box = document.getElementById('modal-group-list');
-        box.innerHTML = state.groups.map(g => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#0d121f; border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;">
-            <strong style="color:#fff;">${g.name}</strong>
-            <div style="display:flex; gap:6px;">
-              <button class="btn btn-secondary btn-rename-grp" data-id="${g.id}" style="padding:4px 10px; font-size:11px;">Ad Değiştir</button>
-              <button class="btn btn-danger btn-del-grp" data-id="${g.id}" style="padding:4px 8px; font-size:11px;">Sil</button>
-            </div>
-          </div>
-        `).join('');
-
-        box.querySelectorAll('.btn-rename-grp').forEach(b => {
-          b.onclick = function() {
-            const grp = state.groups.find(g => g.id === this.dataset.id);
-            if (!grp) return;
-            const newName = prompt('Yeni grup adını girin:', grp.name);
-            if (newName && newName.trim() !== '') {
-              grp.name = newName.trim();
-              saveAll();
-              renderGroupModalList();
-              renderInventory();
-            }
-          };
-        });
-
-        box.querySelectorAll('.btn-del-grp').forEach(b => {
-          b.onclick = function() {
-            if (confirm('Grup silinsin mi?')) {
-              state.groups = state.groups.filter(g => g.id !== this.dataset.id);
-              saveAll();
-              renderGroupModalList();
-              renderInventory();
-            }
-          };
-        });
-      }
-
-      document.getElementById('btn-save-new-group').onclick = () => {
-        const val = document.getElementById('input-new-group-name').value.trim();
-        if (!val) return;
-        state.groups.push({ id: Date.now().toString(), name: val });
-        saveAll();
-        document.getElementById('input-new-group-name').value = '';
-        renderGroupModalList();
-        renderInventory();
-      };
-
-      document.getElementById('btn-open-mat-modal').onclick = () => {
-        const sel = document.getElementById('input-mat-group-select');
-        sel.innerHTML = state.groups.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
-        document.getElementById('modal-material').classList.remove('hidden');
-      };
-      document.getElementById('btn-close-mat-modal').onclick = () => document.getElementById('modal-material').classList.add('hidden');
-
-      document.getElementById('btn-save-new-mat').onclick = () => {
-        const gid = document.getElementById('input-mat-group-select').value;
-        const name = document.getElementById('input-mat-name').value.trim();
-        const price = parseFloat(document.getElementById('input-mat-price').value);
-
-        if (!name || isNaN(price)) { alert('Malzeme adı ve fiyat giriniz.'); return; }
-
-        state.materials.unshift({ id: Date.now().toString(), name, sale_price: price, group_id: gid });
-        saveAll();
-
-        document.getElementById('modal-material').classList.add('hidden');
-        document.getElementById('input-mat-name').value = '';
-        document.getElementById('input-mat-price').value = '';
-        renderInventory();
-        renderDashboard();
-      };
-
-      // TEKLİF BUILDER & FİYAT GİZLEME
-      function initBuilder() {
-        state.builderItems = [];
-        state.paymentMethod = 'cash';
-        document.getElementById('toggle-hide-prices').checked = false;
-        state.hidePricesInQuote = false;
-
-        document.getElementById('builder-quote-code').textContent = 'BK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-
-        const sel = document.getElementById('builder-customer-select');
-        if (state.customers.length === 0) {
-          sel.innerHTML = '<option value="">Önce Müşteri Eklemelisiniz</option>';
-        } else {
-          sel.innerHTML = state.customers.map(c => `<option value="${c.id}">${c.company_name} (${c.authorized_person || ''})</option>`).join('');
-        }
-
-        const ccSel = document.getElementById('builder-cc-installment');
-        ccSel.innerHTML = [1,2,3,4,5,6,7,8,9,10,11,12].map(m => {
-          const rate = state.ccRates[m] || 0;
-          return `<option value="${m}">${m} Taksit (+%${rate})</option>`;
-        }).join('');
-
-        setPayment('cash');
-        renderBuilderItems();
-        calculateQuote();
-      }
-
-      document.getElementById('toggle-hide-prices').onchange = function() {
-        state.hidePricesInQuote = this.checked;
-      };
-
-      document.getElementById('btn-open-select-mat').onclick = () => {
-        renderSelectMaterialModal('all');
-        document.getElementById('modal-select-item').classList.remove('hidden');
-      };
-      document.getElementById('btn-close-select-mat').onclick = () => document.getElementById('modal-select-item').classList.add('hidden');
-
-      function renderSelectMaterialModal(gid) {
-        const pBox = document.getElementById('select-mat-pills');
-        pBox.innerHTML = `<button class="pill-btn ${gid === 'all' ? 'active' : ''}" data-sgid="all">Tümü</button>` +
-          state.groups.map(g => `<button class="pill-btn ${gid === g.id ? 'active' : ''}" data-sgid="${g.id}">${g.name}</button>`).join('');
-
-        pBox.querySelectorAll('.pill-btn').forEach(b => {
-          b.onclick = () => renderSelectMaterialModal(b.dataset.sgid);
-        });
-
-        const lBox = document.getElementById('select-mat-list');
-        const list = gid === 'all' ? state.materials : state.materials.filter(m => m.group_id === gid);
-
-        if (list.length === 0) {
-          lBox.innerHTML = '<div style="text-align:center; padding:16px; color:#64748b;">Malzeme yok.</div>';
-          return;
-        }
-
-        lBox.innerHTML = list.map(m => `
-          <div class="card btn-add-to-quote" data-id="${m.id}" style="display:flex; justify-content:space-between; align-items:center; padding:10px; margin-bottom:8px; cursor:pointer;">
-            <div>
-              <strong style="font-size:13px; color:#fff; display:block;">${m.name}</strong>
-              <span style="font-size:11px; color:var(--orange); font-family:monospace;">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
-            </div>
-            <span style="color:var(--orange); font-weight:900; font-size:18px;">+</span>
-          </div>
-        `).join('');
-
-        lBox.querySelectorAll('.btn-add-to-quote').forEach(card => {
-          card.onclick = function() {
-            const mat = state.materials.find(m => m.id === this.dataset.id);
-            if (mat) {
-              state.builderItems.push({ id: mat.id, name: mat.name, quantity: 1, base_price: mat.sale_price });
-              renderBuilderItems();
-              calculateQuote();
-            }
-            document.getElementById('modal-select-item').classList.add('hidden');
-          };
-        });
-      }
-
-      function renderBuilderItems() {
-        const box = document.getElementById('builder-items-box');
-        if (state.builderItems.length === 0) {
-          box.innerHTML = '<div style="text-align:center; padding:14px; font-size:11px; color:#64748b;">Henüz malzeme eklenmedi.</div>';
-          return;
-        }
-
-        box.innerHTML = state.builderItems.map((item, idx) => `
-          <div style="background:#0d121f; border:1px solid var(--card-border); border-radius:12px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-            <div style="flex:1;">
-              <strong style="font-size:12px; color:#fff; display:block;">${item.name}</strong>
-              <div style="display:flex; gap:8px; margin-top:4px;">
-                <input type="number" min="1" value="${item.quantity}" data-idx="${idx}" class="item-qty form-control" style="width:55px; padding:4px; text-align:center; font-weight:bold;">
-                <input type="number" value="${item.base_price}" data-idx="${idx}" class="item-price form-control" style="width:85px; padding:4px; text-align:right; font-weight:bold; color:var(--orange);">
-              </div>
-            </div>
-            <button class="btn btn-danger btn-del-b-item" data-idx="${idx}" style="padding:4px 8px; font-size:10px;">✕</button>
-          </div>
-        `).join('');
-
-        box.querySelectorAll('.item-qty').forEach(i => {
-          i.oninput = function() { state.builderItems[this.dataset.idx].quantity = Math.max(1, Number(this.value) || 1); calculateQuote(); };
-        });
-        box.querySelectorAll('.item-price').forEach(i => {
-          i.oninput = function() { state.builderItems[this.dataset.idx].base_price = Number(this.value) || 0; calculateQuote(); };
-        });
-        box.querySelectorAll('.btn-del-b-item').forEach(b => {
-          b.onclick = function() { state.builderItems.splice(this.dataset.idx, 1); renderBuilderItems(); calculateQuote(); };
-        });
-      }
-
-      function setPayment(method) {
-        state.paymentMethod = method;
-        document.getElementById('pay-opt-cash').className = method === 'cash' ? 'btn btn-orange' : 'btn btn-secondary';
-        document.getElementById('pay-opt-card').className = method === 'credit_card' ? 'btn btn-orange' : 'btn btn-secondary';
-        document.getElementById('pay-opt-senet').className = method === 'promissory_note' ? 'btn btn-orange' : 'btn btn-secondary';
-
-        document.getElementById('box-card-options').classList.toggle('hidden', method !== 'credit_card');
-        document.getElementById('box-senet-options').classList.toggle('hidden', method !== 'promissory_note');
-        calculateQuote();
-      }
-
-      document.getElementById('pay-opt-cash').onclick = () => setPayment('cash');
-      document.getElementById('pay-opt-card').onclick = () => setPayment('credit_card');
-      document.getElementById('pay-opt-senet').onclick = () => setPayment('promissory_note');
-
-      function calculateQuote() {
-        const profitRate = Number(document.getElementById('builder-profit').value) || 0;
-        const discount = Number(document.getElementById('builder-discount').value) || 0;
-        const vatRate = Number(document.getElementById('builder-vat').value) || 0;
-
-        let subtotal = 0;
-        state.builderItems.forEach(it => {
-          const unitPrice = it.base_price * (1 + profitRate / 100);
-          subtotal += unitPrice * it.quantity;
-        });
-
-        const matrah = Math.max(0, subtotal - discount);
-        const vatAmount = matrah * (vatRate / 100);
-        const cashTotal = matrah + vatAmount;
-
-        let interest = 0;
-        let grand = cashTotal;
-        let monthly = 0;
-        let schedule = [];
-
-        const today = new Date();
-
-        if (state.paymentMethod === 'credit_card') {
-          const inst = parseInt(document.getElementById('builder-cc-installment').value) || 1;
-          const rate = state.ccRates[inst] || 0;
-          interest = cashTotal * (rate / 100);
-          grand = cashTotal + interest;
-          monthly = grand / inst;
-
-          for (let m = 1; m <= inst; m++) {
-            const d = new Date(today.getFullYear(), today.getMonth() + (m - 1), today.getDate());
-            schedule.push({ installmentNo: m, date: d.toLocaleDateString('tr-TR'), amount: monthly });
-          }
-
-          document.getElementById('cc-schedule-box').innerHTML = `
-            <div style="font-weight:bold; margin-bottom:4px; color:var(--orange);">Kredi Kartı Planı (${inst} Ay):</div>
-            ${schedule.map(s => `
-              <div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed #1f293d;">
-                <span>${s.installmentNo}. Taksit (${s.date})</span>
-                <strong style="color:#fff; font-family:monospace;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong>
-              </div>
-            `).join('')}
-          `;
-        } else if (state.paymentMethod === 'promissory_note') {
-          const down = Math.min(cashTotal, Number(document.getElementById('builder-senet-down').value) || 0);
-          const months = parseInt(document.getElementById('builder-senet-months').value) || 6;
-          const remaining = cashTotal - down;
-          
-          interest = remaining * ((state.senetRate * months) / 100);
-          grand = down + remaining + interest;
-          monthly = months > 0 ? (remaining + interest) / months : 0;
-
-          for (let m = 1; m <= months; m++) {
-            const d = new Date(today.getFullYear(), today.getMonth() + m, today.getDate());
-            schedule.push({ installmentNo: m, date: d.toLocaleDateString('tr-TR'), amount: monthly });
-          }
-
-          document.getElementById('senet-schedule-box').innerHTML = `
-            <div style="font-weight:bold; margin-bottom:4px; color:var(--orange);">Senet Takvimi (Peşinat: ${down.toLocaleString('tr-TR')} ₺):</div>
-            ${schedule.map(s => `
-              <div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed #1f293d;">
-                <span>${s.installmentNo}. Senet (${s.date})</span>
-                <strong style="color:#fff; font-family:monospace;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong>
-              </div>
-            `).join('')}
-          `;
-        }
-
-        state.calculated = { subtotal, discount, vatAmount, interest, grand, monthly, schedule };
-
-        document.getElementById('txt-calc-subtotal').textContent = subtotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-        document.getElementById('txt-calc-vat').textContent = vatAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-        document.getElementById('txt-calc-interest').textContent = interest.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-        document.getElementById('txt-calc-grand').textContent = grand.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-
-        const monthBox = document.getElementById('box-calc-monthly');
-        if (state.paymentMethod !== 'cash') {
-          monthBox.classList.remove('hidden');
-          document.getElementById('txt-calc-monthly').textContent = monthly.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
-        } else {
-          monthBox.classList.add('hidden');
-        }
-      }
-
-      ['builder-profit', 'builder-discount', 'builder-vat', 'builder-cc-installment', 'builder-senet-down', 'builder-senet-months'].forEach(id => {
-        document.getElementById(id).oninput = calculateQuote;
-        document.getElementById(id).onchange = calculateQuote;
-      });
-
-      // TEKLİFİ KAYDET
-      document.getElementById('btn-builder-save').onclick = () => {
-        const custId = document.getElementById('builder-customer-select').value;
-        if (!custId) { alert('Lütfen müşteri seçiniz.'); return; }
-        if (state.builderItems.length === 0) { alert('En az bir malzeme ekleyin.'); return; }
-
-        const customer = state.customers.find(c => c.id === custId);
-        const profitRate = Number(document.getElementById('builder-profit').value) || 0;
-        const status = document.getElementById('builder-status-select').value;
-
-        const newQuote = {
-          id: Date.now().toString(),
-          quote_number: document.getElementById('builder-quote-code').textContent,
-          customer_snapshot: customer,
-          status,
-          issue_date: new Date().toLocaleDateString('tr-TR'),
-          payment_method: state.paymentMethod,
-          hide_prices: state.hidePricesInQuote,
-          vat_rate: Number(document.getElementById('builder-vat').value),
-          subtotal: state.calculated.subtotal,
-          discount_total: state.calculated.discount,
-          vat_total: state.calculated.vatAmount,
-          interest_total: state.calculated.interest,
-          grand_total: state.calculated.grand,
-          monthly_amount: state.calculated.monthly,
-          schedule: state.calculated.schedule,
-          items: state.builderItems.map(it => ({
-            name: it.name,
-            quantity: it.quantity,
-            unit_price: it.base_price * (1 + profitRate / 100),
-            total: (it.base_price * (1 + profitRate / 100)) * it.quantity
-          }))
-        };
-
-        state.quotes.unshift(newQuote);
-        saveAll();
-
-        alert('Teklif başarıyla kaydedildi!');
-        switchTab('quotes');
-      };
-
-      // TEKLİFLER & PDF (FİYAT GİZLEME UYUMLU)
-      function renderQuotes(filterText = '') {
-        const box = document.getElementById('quotes-list-container');
-        let list = state.quotes;
-
-        if (filterText) {
-          const t = filterText.toLowerCase();
-          list = list.filter(q => q.quote_number.toLowerCase().includes(t) || (q.customer_snapshot?.company_name || '').toLowerCase().includes(t));
-        }
-
-        if (list.length === 0) {
-          box.innerHTML = '<div style="text-align:center; padding:24px; color:#64748b;">Teklif bulunamadı.</div>';
-          return;
-        }
-
-        box.innerHTML = list.map((q, idx) => `
-          <div class="card" style="margin-bottom:8px; padding:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:start;">
-              <div>
-                <strong style="font-size:13px; color:#fff;">${q.quote_number}</strong>
-                <p style="font-size:11px; color:#94a3b8; margin-top:2px;">${q.customer_snapshot ? q.customer_snapshot.company_name : '-'}</p>
-                <div style="margin-top:4px;">
-                  <span class="status-badge st-${q.status || 'taslak'}">${q.status || 'taslak'}</span>
-                  ${q.hide_prices ? '<span style="font-size:9px; background:#334155; color:#cbd5e1; padding:2px 6px; border-radius:6px; margin-left:4px;">Fiyatsız Form</span>' : ''}
-                </div>
-              </div>
-              <span style="font-weight:900; font-size:14px; font-family:monospace; color:var(--orange);">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--card-border); margin-top:10px; padding-top:8px; font-size:11px;">
-              <span style="color:#64748b;">${q.issue_date}</span>
-              <div style="display:flex; gap:6px;">
-                <button class="btn btn-orange btn-view-pdf" data-idx="${idx}" style="padding:5px 10px; font-size:11px;">PDF / Yazdır</button>
-                <button class="btn btn-danger btn-del-quote" data-idx="${idx}" style="padding:5px 8px; font-size:11px;">Sil</button>
-              </div>
-            </div>
-          </div>
-        `).join('');
-
-        box.querySelectorAll('.btn-del-quote').forEach(b => {
-          b.onclick = function() {
-            if (confirm('Teklif silinsin mi?')) {
-              state.quotes.splice(this.dataset.idx, 1);
-              saveAll();
-              renderQuotes(document.getElementById('search-quotes').value);
-              renderDashboard();
-            }
-          };
-        });
-
-        box.querySelectorAll('.btn-view-pdf').forEach(b => {
-          b.onclick = function() {
-            openPdfModal(state.quotes[this.dataset.idx]);
-          };
-        });
-      }
-
-      document.getElementById('search-quotes').oninput = (e) => renderQuotes(e.target.value);
-
-      function openPdfModal(q) {
-        const area = document.getElementById('printArea');
-        const hidePrices = q.hide_prices === true;
-
-        area.innerHTML = `
-          <div style="border-bottom:2px solid #090d16; padding-bottom:12px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <h2 style="font-size:18px; font-weight:900; color:#090d16;">BK YAPI İNŞAAT TAAHHÜT</h2>
-              <p style="font-size:10px; color:#64748b;">Mühendislik • Mimarlık • Malzeme Tedarik</p>
-            </div>
-            <div style="text-align:right;">
-              <strong style="font-size:12px; display:block; color:#090d16;">${q.quote_number}</strong>
-              <span style="font-size:10px; color:#64748b;">Tarih: ${q.issue_date}</span>
-            </div>
-          </div>
-
-          <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:12px; font-size:11px; border:1px solid #e2e8f0;">
-            <strong style="display:block; color:#090d16; font-size:12px;">Sayın: ${q.customer_snapshot ? q.customer_snapshot.company_name : '-'}</strong>
-            <span style="color:#64748b;">Yetkili: ${q.customer_snapshot?.authorized_person || '-'} • İletişim: ${q.customer_snapshot?.phone || '-'}</span>
-            ${q.customer_snapshot?.address ? `<p style="color:#94a3b8; font-size:10px; margin-top:2px;">Şantiye / Adres: ${q.customer_snapshot.address}</p>` : ''}
-          </div>
-
-          <table style="width:100%; border-collapse:collapse; margin-bottom:14px; font-size:11px;">
-            <thead>
-              <tr style="background:#f1f5f9; border-bottom:1px solid #cbd5e1; text-align:left;">
-                <th style="padding:6px; color:#0f172a;">Sıra</th>
-                <th style="padding:6px; color:#0f172a;">Malzeme Tanımı</th>
-                <th style="padding:6px; text-align:center; color:#0f172a;">Miktar</th>
-                ${!hidePrices ? `
-                  <th style="padding:6px; text-align:right; color:#0f172a;">Birim Fiyat</th>
-                  <th style="padding:6px; text-align:right; color:#0f172a;">Toplam</th>
-                ` : ''}
-              </tr>
-            </thead>
-            <tbody>
-              ${(q.items || []).map((it, idx) => `
-                <tr style="border-bottom:1px solid #e2e8f0;">
-                  <td style="padding:6px; color:#64748b;">${idx + 1}</td>
-                  <td style="padding:6px; color:#0f172a; font-weight:600;">${it.name}</td>
-                  <td style="padding:6px; text-align:center; color:#0f172a;">${it.quantity}</td>
-                  ${!hidePrices ? `
-                    <td style="padding:6px; text-align:right; color:#0f172a;">${Number(it.unit_price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td>
-                    <td style="padding:6px; text-align:right; font-weight:bold; color:#0f172a;">${Number(it.total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td>
-                  ` : ''}
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          ${!hidePrices ? `
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom:12px;">
-              <div>
-                <strong style="font-size:10px; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;">Ödeme Koşulları</strong>
-                <p style="font-size:11px; font-weight:bold; color:#0f172a;">
-                  ${q.payment_method === 'cash' ? 'Peşin Ödeme' : q.payment_method === 'credit_card' ? 'Kredi Kartı Taksitli' : 'Senetli Satış'}
-                </p>
-                ${q.schedule && q.schedule.length > 0 ? `
-                  <div style="margin-top:6px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
-                    <table style="width:100%; font-size:9px; border-collapse:collapse;">
-                      <thead style="background:#f1f5f9;"><tr><th style="padding:2px 4px; text-align:left;">Vade</th><th style="padding:2px 4px; text-align:right;">Tutar</th></tr></thead>
-                      <tbody>
-                        ${q.schedule.map(s => `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:2px 4px;">${s.installmentNo}. Taksit (${s.date})</td><td style="padding:2px 4px; text-align:right; font-weight:bold;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td></tr>`).join('')}
-                      </tbody>
-                    </table>
-                  </div>
-                ` : ''}
-              </div>
-
-              <div style="font-size:11px; space-y:3px; text-align:right;">
-                <div>Ara Toplam: <strong>${Number(q.subtotal).toLocaleString('tr-TR')} ₺</strong></div>
-                ${q.discount_total > 0 ? `<div style="color:#e11d48;">İskonto: -${Number(q.discount_total).toLocaleString('tr-TR')} ₺</div>` : ''}
-                <div>KDV: <strong>${Number(q.vat_total).toLocaleString('tr-TR')} ₺</strong></div>
-                ${q.interest_total > 0 ? `<div>Vade Farkı: <strong>+${Number(q.interest_total).toLocaleString('tr-TR')} ₺</strong></div>` : ''}
-                <div style="font-size:13px; font-weight:900; color:#090d16; border-top:1px solid #090d16; padding-top:4px; margin-top:4px;">
-                  Genel Toplam: ${Number(q.grand_total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
-                </div>
-              </div>
-            </div>
-          ` : `
-            <div style="background:#fffbeb; border:1px solid #fde68a; padding:10px; border-radius:8px; font-size:11px; color:#92400e; margin-bottom:12px;">
-              * Bu belge keşif ve malzeme metraj mutabakatı amacıyla düzenlenmiştir.
-            </div>
-          `}
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 35px; text-align: center; font-size: 10px;">
-            <div><p style="font-weight:bold; color:#0f172a;">BK YAPI Yetkilisi</p><div style="height:35px;"></div><p style="color:#94a3b8;">Kaşe / İmza</p></div>
-            <div><p style="font-weight:bold; color:#0f172a;">Müşteri Onayı</p><div style="height:35px;"></div><p style="color:#94a3b8;">Kaşe / İmza</p></div>
-          </div>
-        `;
-
-        document.getElementById('btn-pdf-whatsapp').onclick = () => {
-          let text = `Sayın ${q.customer_snapshot?.company_name},\nBK YAPI olarak hazırladığımız ${q.quote_number} numaralı teklif formu ekte bilgilerinize sunulmuştur.`;
-          if (!hidePrices) {
-            text += `\nGenel Toplam: ${Number(q.grand_total).toLocaleString('tr-TR')} TL`;
-          }
-          const phone = (q.customer_snapshot?.phone || '').replace(/[^0-9]/g, '');
-          window.open(`https://wa.me/90${phone}?text=${encodeURIComponent(text)}`);
-        };
-
-        document.getElementById('modal-pdf').classList.remove('hidden');
-      }
-
-      document.getElementById('btn-close-pdf').onclick = () => document.getElementById('modal-pdf').classList.add('hidden');
-
-      // AYARLAR
-      document.getElementById('setting-senet-rate').value = state.senetRate;
-      document.getElementById('btn-save-settings').onclick = () => {
-        state.senetRate = parseFloat(document.getElementById('setting-senet-rate').value) || 2.5;
-        saveAll();
-        alert('Ayarlar güncellendi.');
-      };
-
-      document.getElementById('btn-export-data').onclick = () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-        const dlAnchor = document.createElement('a');
-        dlAnchor.setAttribute("href", dataStr);
-        dlAnchor.setAttribute("download", `bkyapi_erp_${new Date().toISOString().split('T')[0]}.json`);
-        dlAnchor.click();
-      };
-
-      document.getElementById('btn-import-trigger').onclick = () => document.getElementById('file-import-input').click();
-      document.getElementById('file-import-input').onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          try {
-            const imported = JSON.parse(event.target.result);
-            if (imported.groups && imported.materials) {
-              state = imported;
-              saveAll();
-              alert('Yedek başarıyla yüklendi!');
-              location.reload();
-            } else {
-              alert('Geçersiz yedek.');
-            }
-          } catch(err) {
-            alert('Dosya hatası.');
-          }
-        };
-        reader.readAsText(file);
-      };
-
-      renderDashboard();
-    });
-  </script>
-</body>
-</html>
+<html lang="tr"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>BK YAPI - Mobil ERP & CRM</title><meta name="theme-color" content="#090d16">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+:root{--bg:#090d16;--card:#111827;--bd:#1f293d;--or:#ff6b00;--glow:rgba(255,107,0,.25);--tx:#f8fafc;--mu:#94a3b8;--in:#0d121f}
+body{background:var(--bg);color:var(--tx);font-size:13px;padding:env(safe-area-inset-top,0) 0 calc(96px + env(safe-area-inset-bottom,0))}
+.hd{background:rgba(9,13,22,.95);backdrop-filter:blur(10px);padding:12px 18px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd)}
+.logo{width:38px;height:38px;background:linear-gradient(135deg,#ff6b00,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000}
+.hd h1{font-size:15px;font-weight:900}.hd p{font-size:10px;color:var(--or);font-weight:700;text-transform:uppercase}
+.tag{font-size:10px;background:#1c2438;color:#38bdf8;padding:4px 10px;border-radius:20px;font-weight:800}
+.ct{max-width:500px;margin:0 auto;padding:14px}
+.cd{background:var(--card);border-radius:16px;padding:14px;border:1px solid var(--bd);margin-bottom:10px}
+.gl{border-color:rgba(255,107,0,.3);box-shadow:0 4px 25px rgba(255,107,0,.12)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.g{display:flex;gap:6px}
+.mu{color:var(--mu)}.s{font-size:10px}.d{display:block}.or{color:var(--or)}.mono{font-family:monospace}
+.em{text-align:center;padding:24px;color:#64748b}
+h2.t{font-size:17px;font-weight:900}h3{font-size:14px;font-weight:900;margin-bottom:12px}
+.b{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;font-size:13px;font-weight:800;border-radius:12px;border:none;cursor:pointer;gap:6px;color:#fff}
+.b:active{transform:scale(.96)}.bo{background:linear-gradient(135deg,#ff6b00,#ea580c);box-shadow:0 4px 15px var(--glow)}
+.bs{background:#1e293b;color:#cbd5e1;border:1px solid #334155}.bk{background:#e11d48}.bg{background:#059669}.blk{width:100%}.sm{padding:5px 9px;font-size:11px}
+.fl{display:block;font-size:10px;font-weight:800;color:var(--mu);margin-bottom:5px;text-transform:uppercase}
+.fc{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:12px;font-size:13px;background:var(--in);color:#fff;outline:none}
+.fc:focus{border-color:var(--or)}.mb .fc,.mb .fl{margin-bottom:10px}.cd>.fc{margin-bottom:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nav{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom,0));left:10px;right:10px;background:rgba(17,24,39,.96);backdrop-filter:blur(16px);border:1px solid #2d3748;border-radius:22px;display:flex;padding:8px 2px;z-index:60;max-width:480px;margin:0 auto}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;background:none;border:none;font-size:9px;font-weight:800;color:#64748b;gap:2px;cursor:pointer}
+.nb.on{color:var(--or)}.nb span{font-size:17px}
+.pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}
+.pl{white-space:nowrap;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:800;border:1px solid var(--bd);background:#131b2e;color:var(--mu);cursor:pointer}
+.pl.on{background:#ea580c;color:#fff;border-color:var(--or)}
+.tgw{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--in);border-radius:12px;border:1px solid var(--bd);margin-bottom:10px}
+.tgl{position:relative;width:44px;height:24px;flex:none}.tgl input{opacity:0;width:0;height:0}
+.sl{position:absolute;inset:0;background:#334155;border-radius:24px;transition:.2s}
+.sl:before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+input:checked+.sl{background:var(--or)}input:checked+.sl:before{transform:translateX(20px)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:14px}
+.mb{background:var(--card);border:1px solid #2d3748;border-radius:20px;width:100%;max-width:450px;max-height:88vh;overflow-y:auto;padding:18px}
+.x{float:right;background:none;border:none;color:#fff;font-size:18px;cursor:pointer}
+.sel{width:auto;padding:3px 6px;font-size:10px;font-weight:800;border-radius:8px}
+.st-taslak{color:#94a3b8}.st-gonderildi{color:#60a5fa}.st-onaylandi{color:#34d399}.st-reddedildi{color:#fb7185}
+.tg2{font-size:9px;background:#334155;color:#cbd5e1;padding:3px 7px;border-radius:6px;font-weight:800}
+.it{background:var(--in);border:1px solid var(--bd);border-radius:12px;padding:8px 10px;margin-bottom:6px;display:flex;gap:8px;align-items:center}
+.it .q{width:60px;padding:4px;text-align:center}.it .p{width:90px;padding:4px;text-align:right;color:var(--or)}
+.sch{background:var(--in);border:1px solid var(--bd);border-radius:10px;padding:8px;font-size:11px;margin-top:10px}
+.sch div{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dashed var(--bd)}
+.al{padding:10px;border-radius:12px;font-size:11px;font-weight:700;margin-bottom:10px}
+#pa{background:#fff;color:#0f172a;padding:12px;border-radius:10px;font-size:11px}
+.hidden{display:none!important}
+@media print{body *{visibility:hidden}#pa,#pa *{visibility:visible}#pa{position:absolute;left:0;top:0;width:100%}.mo,.mb{position:static!important;max-height:none!important;overflow:visible!important}}
+</style></head><body>
+<header class="hd"><div class="g" style="align-items:center;gap:10px"><div class="logo">BK</div><div><h1>BK YAPI</h1><p>Enterprise ERP Portal</p></div></div><span class="tag">v5.0</span></header>
+<main class="ct">
+<section id="v-dashboard"></section>
+
+<section id="v-customers" class="hidden">
+<div class="row" style="margin-bottom:12px"><h2 class="t">Müşteri Rehberi</h2><button class="b bo sm" onclick="custM()">+ Yeni Müşteri</button></div>
+<input id="sc" class="fc" style="margin-bottom:12px" placeholder="Müşteri adı veya telefon ara..." oninput="rCust()"><div id="cl"></div></section>
+
+<section id="v-inventory" class="hidden">
+<div class="row" style="margin-bottom:12px"><h2 class="t">Envanter</h2><div class="g"><button class="b bs sm" onclick="grpM()">Gruplar</button><button class="b bs sm" onclick="bulk()">Toplu %</button><button class="b bo sm" onclick="matM()">+ Malzeme</button></div></div>
+<input id="sm" class="fc" style="margin-bottom:12px" placeholder="Malzeme ara..." oninput="rInv()"><div id="ip" class="pills"></div><div id="il"></div></section>
+
+<section id="v-quotes" class="hidden">
+<div class="row" style="margin-bottom:12px"><h2 class="t">Teklif Portföyü</h2><button class="b bo sm" onclick="openB('new')">+ Teklif Ver</button></div>
+<input id="sq" class="fc" style="margin-bottom:12px" placeholder="Teklif no, firma veya proje ara..." oninput="rQuo()"><div id="qp" class="pills"></div><div id="ql"></div></section>
+
+<section id="v-builder" class="hidden">
+<div class="row" style="margin-bottom:12px"><button class="b bs sm" onclick="tab('quotes')">← İptal</button><b id="b-no" class="or mono"></b><button class="b bo sm" onclick="saveQ()">Kaydet</button></div>
+<div class="cd"><div class="grid2"><div><label class="fl">Müşteri</label><select id="b-cust" class="fc"></select></div><div><label class="fl">Durum</label><select id="b-st" class="fc"><option value="taslak">Taslak</option><option value="gonderildi">Gönderildi</option><option value="onaylandi">Onaylandı</option><option value="reddedildi">Reddedildi</option></select></div></div>
+<label class="fl" style="margin-top:10px">Proje / Şantiye</label><input id="b-proj" class="fc" placeholder="Örn: Kadıköy 12 daire"></div>
+<div class="tgw"><div><b style="font-size:12px">Müşteri çıktısında fiyatları gizle</b><span class="mu s d">PDF fiyatsız keşif listesi olur</span></div><label class="tgl"><input type="checkbox" id="b-hide"><span class="sl"></span></label></div>
+<div class="cd"><div class="row" style="margin-bottom:10px"><label class="fl" style="margin:0">Malzemeler</label><div class="g"><button class="b bs sm" onclick="free()">+ Serbest</button><button class="b bs sm or" onclick="pickM()">+ Envanter</button></div></div><div id="b-items"></div></div>
+<div class="cd row" style="background:rgba(255,107,0,.05);border-color:rgba(255,107,0,.3)"><div><b class="or">Kâr / Artış Oranı (%)</b><span class="mu s d">PDF çıktısında asla görünmez</span></div><input id="b-profit" type="number" min="0" value="0" class="fc" style="width:75px;text-align:center" oninput="calc()"></div>
+<div class="cd grid2"><div><label class="fl">İskonto (TL)</label><input id="b-disc" type="number" min="0" value="0" class="fc" oninput="calc()"></div><div><label class="fl">KDV</label><select id="b-vat" class="fc" onchange="calc()"><option value="0">%0 Muaf</option><option value="1">%1</option><option value="10">%10</option><option value="20" selected>%20</option></select></div>
+<div><label class="fl">Geçerlilik (gün)</label><input id="b-valid" type="number" min="1" value="15" class="fc"></div></div>
+<div class="cd"><label class="fl">Ödeme Yöntemi</label>
+<div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:6px"><button id="pay-cash" class="b bo" onclick="setPay('cash')">Peşin</button><button id="pay-cc" class="b bs" onclick="setPay('credit_card')">Kredi Kartı</button><button id="pay-sn" class="b bs" onclick="setPay('promissory_note')">Senet</button></div>
+<div id="boxcc" class="hidden" style="margin-top:10px"><label class="fl">Taksit Sayısı</label><select id="b-cc" class="fc" onchange="calc()"></select></div>
+<div id="boxsn" class="hidden grid2" style="margin-top:10px"><div><label class="fl">Peşinat (TL)</label><input id="b-down" type="number" min="0" value="0" class="fc" oninput="calc()"></div><div><label class="fl">Vade (Ay)</label><select id="b-mon" class="fc" onchange="calc()"></select></div></div>
+<div id="b-sch" class="sch hidden"></div></div>
+<div class="cd gl" style="background:var(--in)">
+<div class="row mu"><span>Ara Toplam</span><span id="t-sub"></span></div><div class="row mu"><span>KDV</span><span id="t-vat"></span></div><div class="row mu"><span>Vade Farkı</span><span id="t-int"></span></div>
+<div class="row" style="font-size:18px;font-weight:900;border-top:1px solid var(--bd);padding-top:10px;margin-top:8px"><span>Genel Toplam</span><span id="t-grand" class="or mono"></span></div>
+<div id="boxmon" class="hidden" style="text-align:right;color:#38bdf8;font-weight:800;font-size:11px;margin-top:4px">Aylık: <span id="t-mon"></span></div>
+<div id="t-prof" class="s" style="margin-top:8px;color:#34d399;border-top:1px dashed var(--bd);padding-top:8px"></div></div>
+</section>
+
+<section id="v-payments" class="hidden"><h2 class="t" style="margin-bottom:12px">Tahsilat Takibi</h2><div id="ps"></div><div id="pp" class="pills"></div><div id="pl"></div></section>
+
+<section id="v-settings" class="hidden"><h2 class="t" style="margin-bottom:12px">Ayarlar</h2>
+<div class="cd"><label class="fl">Senet Aylık Vade Farkı (%)</label><input id="s-senet" type="number" step="0.1" class="fc" style="margin-bottom:10px">
+<label class="fl">Varsayılan Teklif Geçerliliği (gün)</label><input id="s-valid" type="number" class="fc"></div>
+<div class="cd"><label class="fl">Firma Bilgileri (PDF başlığı)</label>
+<input id="s-name" class="fc" placeholder="Firma unvanı" style="margin-bottom:8px"><input id="s-addr" class="fc" placeholder="Adres" style="margin-bottom:8px"><input id="s-phone" class="fc" placeholder="Telefon" style="margin-bottom:8px"><input id="s-tax" class="fc" placeholder="Vergi dairesi / no" style="margin-bottom:8px"><input id="s-iban" class="fc" placeholder="IBAN"></div>
+<button class="b bo blk" style="margin-bottom:10px" onclick="saveSet()">Ayarları Kaydet</button>
+<div class="cd"><label class="fl">Yedekleme</label><p class="mu" style="margin-bottom:10px;font-size:11px">Cihaz değişiminde veri kaybetmemek için düzenli yedek indirin. Eski sürüm yedekleri de yüklenir.</p>
+<div class="grid2"><button class="b bs" onclick="exportD()">Yedek İndir</button><button class="b bs" onclick="$('imp').click()">Yedek Yükle</button></div><input type="file" id="imp" accept=".json" class="hidden" onchange="importD(event)"></div>
+</section>
+</main>
+
+<div id="mo" class="mo hidden"><div class="mb" id="mbx"></div></div>
+<div id="mp" class="mo hidden"><div class="mb" style="max-width:620px"><div class="row" style="margin-bottom:10px"><b>Teklif Belgesi</b><div class="g"><button id="b-wa" class="b bg sm">WhatsApp</button><button class="b bo sm" onclick="print()">Yazdır</button><button class="b bs sm" onclick="$('mp').classList.add('hidden')">✕</button></div></div><div id="pa"></div></div></div>
+
+<nav class="nav">
+<button class="nb" data-t="dashboard" onclick="tab('dashboard')"><span>🏠</span>Panel</button>
+<button class="nb" data-t="customers" onclick="tab('customers')"><span>👥</span>Müşteri</button>
+<button class="nb" data-t="inventory" onclick="tab('inventory')"><span>📦</span>Envanter</button>
+<button class="nb" data-t="quotes" onclick="tab('quotes')"><span>📄</span>Teklif</button>
+<button class="nb" data-t="payments" onclick="tab('payments')"><span>💰</span>Tahsilat</button>
+<button class="nb" data-t="settings" onclick="tab('settings')"><span>⚙️</span>Ayar</button>
+</nav>
+
+<script>
+const $=i=>document.getElementById(i),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>Number(n||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₺';
+const L=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const p2=n=>String(n).padStart(2,'0'),iso=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()),today=()=>iso(new Date());
+const toIso=s=>/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(s)?s.split('.').reverse().map((x,i)=>i?p2(x):x).join('-'):s;
+const fd=s=>{if(!s)return'-';const[y,m,d]=toIso(s).split('-');return d+'.'+m+'.'+y};
+const addD=(s,n)=>{const[y,m,d]=s.split('-').map(Number);return iso(new Date(y,m-1,d+n))};
+const addM=(s,n)=>{const[y,m,d]=s.split('-').map(Number),t=new Date(y,m-1+n,1);t.setDate(Math.min(d,new Date(t.getFullYear(),t.getMonth()+1,0).getDate()));return iso(t)};
+const days=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5),r2=n=>Math.round(n*100)/100;
+const ST={taslak:'Taslak',gonderildi:'Gönderildi',onaylandi:'Onaylandı',reddedildi:'Reddedildi'},UNITS=['adet','m²','m','kg','ton','torba','paket','lt','m³'];
+const defCc={1:0,2:2.5,3:4.5,4:6,5:7.5,6:9,7:11,8:12.5,9:14,10:15.5,11:17,12:18.5};
+const defCo={name:'BK YAPI İNŞAAT TAAHHÜT',addr:'',phone:'',tax:'',iban:'',valid:15};
+const K={groups:'bk_groups',materials:'bk_materials',customers:'bk_customers',quotes:'bk_quotes',senetRate:'bk_senet_rate',ccRates:'bk_cc_rates',company:'bk_company'};
+let S={groups:L(K.groups,[]),materials:L(K.materials,[]),customers:L(K.customers,[]),quotes:L(K.quotes,[]),senetRate:+L(K.senetRate,2.5)||2.5,ccRates:L(K.ccRates,defCc),company:{...defCo,...L(K.company,{})}};
+let B={items:[]},ig='all',qf='all',pf='wait',pg='all';
+function save(){try{for(const k in K)localStorage.setItem(K[k],JSON.stringify(S[k]))}catch(e){alert('Kayıt hatası: depolama dolu olabilir.')}}
+const qn=q=>q.no+(q.rev>1?'-R'+q.rev:''),cName=q=>q.customer_snapshot?.company_name||'-';
+function migrate(){S.quotes.forEach(q=>{if(!q.no){q.no=q.quote_number||q.id;q.rev=1}q.issue_date=toIso(q.issue_date||today());q.valid_until=q.valid_until||addD(q.issue_date,S.company.valid||15);q.items=q.items||[];q.cost_total=q.cost_total||0;q.hide_prices=!!q.hide_prices;
+if(!q.schedule||!q.schedule.length)q.schedule=[{label:'Peşin',date:q.issue_date,amount:q.grand_total,paid:false}];
+else q.schedule=q.schedule.map(s=>({label:s.label||(s.installmentNo+'. Taksit'),date:toIso(s.date),amount:s.amount,paid:!!s.paid}))})}
+migrate();
+if(!S.groups.length)S.groups=[{id:'1',name:'Kaba İnşaat & Demir'},{id:'2',name:'Elektrik & Aydınlatma'},{id:'3',name:'Boya & Yalıtım'}];
+save();
+const pays=paid=>S.quotes.filter(q=>q.status==='onaylandi').flatMap(q=>q.schedule.map((s,i)=>({q,i,...s})).filter(p=>!!p.paid===paid)).sort((a,b)=>a.date<b.date?-1:1);
+const bal=id=>pays(false).filter(p=>p.q.customer_snapshot?.id===id).reduce((x,p)=>x+p.amount,0);
+function stock(q,sg){q.items.forEach(it=>{const m=S.materials.find(x=>x.id===it.mid);if(m&&m.stock!==''&&m.stock!=null)m.stock=r2(m.stock+sg*it.quantity)})}
+function show(t){document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));$('v-'+t).classList.remove('hidden');const n=t==='builder'?'quotes':t;document.querySelectorAll('.nb').forEach(b=>b.classList.toggle('on',b.dataset.t===n));scrollTo(0,0)}
+function tab(t){show(t);({dashboard:rDash,customers:rCust,inventory:rInv,quotes:rQuo,payments:rPay,settings:fillSet})[t]()}
+function openM(h){$('mbx').innerHTML='<button class="x" onclick="closeM()">✕</button>'+h;$('mo').classList.remove('hidden')}
+function closeM(){$('mo').classList.add('hidden')}
+
+/* PANEL */
+function rDash(){const Q=S.quotes,t=today(),ap=Q.filter(q=>q.status==='onaylandi'),sum=a=>a.reduce((x,q)=>x+(+q.grand_total||0),0);
+const wait=pays(false),over=wait.filter(p=>p.date<t),owed=wait.reduce((x,p)=>x+p.amount,0),ovs=over.reduce((x,p)=>x+p.amount,0);
+const prof=ap.filter(q=>q.cost_total>0).reduce((x,q)=>x+(q.subtotal-q.discount_total-q.cost_total),0);
+const exp=Q.filter(q=>(q.status==='gonderildi'||q.status==='taslak')&&q.valid_until<t).length;
+const ms=[];for(let i=5;i>=0;i--){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);ms.push(iso(d).slice(0,7))}
+const tot=ms.map(m=>[sum(Q.filter(q=>q.issue_date.slice(0,7)===m)),sum(ap.filter(q=>q.issue_date.slice(0,7)===m))]),mx=Math.max(1,...tot.map(x=>x[0]));
+const top={};Q.forEach(q=>top[cName(q)]=(top[cName(q)]||0)+(+q.grand_total||0));const tp=Object.entries(top).sort((a,b)=>b[1]-a[1])[0];
+$('v-dashboard').innerHTML=`${over.length?`<div class="al" style="background:rgba(225,29,72,.15);color:#fb7185">⚠ ${over.length} vadesi geçmiş tahsilat: ${fmt(ovs)}</div>`:''}${exp?`<div class="al" style="background:rgba(245,158,11,.15);color:#f59e0b">⏳ ${exp} teklifin geçerlilik süresi doldu</div>`:''}
+<div class="cd gl"><span class="or s" style="font-weight:900">TOPLAM TEKLİF PORTFÖYÜ</span><h2 class="mono" style="font-size:26px;margin-top:4px">${fmt(sum(Q))}</h2>
+<div class="row mu s" style="margin-top:12px;border-top:1px solid var(--bd);padding-top:8px"><span>Onaylanan</span><b style="color:#34d399">${fmt(sum(ap))}</b></div>
+<div class="row mu s" style="margin-top:4px"><span>Bekleyen tahsilat</span><b style="color:#38bdf8">${fmt(owed)}</b></div>
+<div class="row mu s" style="margin-top:4px"><span>Tahmini kâr (onaylı)</span><b style="color:#34d399">${fmt(prof)}</b></div></div>
+<div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">${[['Müşteri',S.customers.length,'#fff'],['Malzeme',S.materials.length,'var(--or)'],['Teklif',Q.length,'#38bdf8']].map(x=>`<div class="cd" style="margin:0;text-align:center;padding:10px"><span class="mu s">${x[0]}</span><p style="font-size:21px;font-weight:900;color:${x[2]}">${x[1]}</p></div>`).join('')}</div>
+<button class="b bo blk" style="padding:13px;margin-bottom:12px" onclick="openB('new')">⚡ Hızlı Teklif Oluştur</button>
+<div class="cd"><b class="or s">SON 6 AY (mavi: teklif, yeşil: onaylı)</b><div style="display:flex;gap:6px;align-items:flex-end;margin-top:10px">${tot.map((x,i)=>`<div style="flex:1;text-align:center"><div style="display:flex;gap:2px;align-items:flex-end;height:64px;justify-content:center"><i style="width:8px;height:${x[0]/mx*64}px;background:#38bdf8;border-radius:3px"></i><i style="width:8px;height:${x[1]/mx*64}px;background:#34d399;border-radius:3px"></i></div><span class="mu" style="font-size:9px">${ms[i].slice(5)}</span></div>`).join('')}</div>${tp?`<p class="mu s" style="margin-top:8px">En çok teklif: <b style="color:#fff">${esc(tp[0])}</b> (${fmt(tp[1])})</p>`:''}</div>
+<div class="cd"><b class="or s">SON TEKLİFLER</b>${Q.length?Q.slice(0,3).map(q=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--bd)"><div><b>${qn(q)}</b><span class="mu s d">${esc(cName(q))}</span></div><div style="text-align:right"><b class="mono or">${fmt(q.grand_total)}</b><span class="s d st-${q.status}">${ST[q.status]||q.status}</span></div></div>`).join(''):'<div class="em">Henüz teklif yok.</div>'}</div>`}
+
+/* MÜŞTERİ */
+function rCust(){const t=$('sc').value.toLowerCase(),l=S.customers.filter(c=>(c.company_name+c.phone).toLowerCase().includes(t));
+$('cl').innerHTML=l.length?l.map(c=>{const b=bal(c.id);return `<div class="cd row"><div><b>${esc(c.company_name)}</b><span class="mu d">${esc(c.authorized_person||'-')} • ${esc(c.phone)}</span>${c.address?`<p class="mu s">${esc(c.address)}</p>`:''}${b>0?`<p style="color:#fb7185;font-size:11px;font-weight:800;margin-top:3px">Açık bakiye: ${fmt(b)}</p>`:''}</div><div class="g"><button class="b bs sm" onclick="custM('${c.id}')">Düzenle</button><button class="b bk sm" onclick="delCust('${c.id}')">Sil</button></div></div>`}).join(''):'<div class="em">Müşteri bulunamadı.</div>'}
+function custM(id){const c=S.customers.find(x=>x.id===id)||{};openM(`<h3>${id?'Müşteriyi Düzenle':'Yeni Müşteri'}</h3><input id="c-n" class="fc" placeholder="Firma Adı *" value="${esc(c.company_name)}"><input id="c-p" class="fc" placeholder="Yetkili Kişi" value="${esc(c.authorized_person)}"><input id="c-t" class="fc" placeholder="Telefon (WhatsApp) *" value="${esc(c.phone)}"><input id="c-a" class="fc" placeholder="Şantiye / Adres" value="${esc(c.address)}"><button class="b bo blk" onclick="saveCust('${id||''}')">Kaydet</button>`)}
+function saveCust(id){const n=$('c-n').value.trim(),ph=$('c-t').value.trim();if(!n||!ph)return alert('Firma adı ve telefon zorunludur.');
+const d={company_name:n,authorized_person:$('c-p').value.trim(),phone:ph,address:$('c-a').value.trim()},c=S.customers.find(x=>x.id===id);
+if(c)Object.assign(c,d);else S.customers.unshift({id:Date.now().toString(),...d});save();closeM();rCust()}
+function delCust(id){if(confirm('Müşteri silinsin mi? (Mevcut teklifler korunur)')){S.customers=S.customers.filter(c=>c.id!==id);save();rCust()}}
+
+/* ENVANTER */
+function rInv(){const t=$('sm').value.toLowerCase();
+$('ip').innerHTML=`<button class="pl ${ig==='all'?'on':''}" onclick="ig='all';rInv()">Tümü (${S.materials.length})</button>`+S.groups.map(g=>`<button class="pl ${ig===g.id?'on':''}" onclick="ig='${g.id}';rInv()">${esc(g.name)} (${S.materials.filter(m=>m.group_id===g.id).length})</button>`).join('');
+const l=S.materials.filter(m=>(ig==='all'||m.group_id===ig)&&m.name.toLowerCase().includes(t));
+$('il').innerHTML=l.length?l.map(m=>{const g=S.groups.find(x=>x.id===m.group_id),tr=m.stock!==''&&m.stock!=null,mg=m.cost_price>0?Math.round((m.sale_price-m.cost_price)/m.sale_price*100):null;
+return `<div class="cd row"><div><span class="or s d" style="font-weight:900;text-transform:uppercase">${g?esc(g.name):'Genel'}</span><b>${esc(m.name)}</b><span class="s d ${tr&&m.stock<=0?'':'mu'}" style="${tr&&m.stock<=0?'color:#fb7185':''}">${tr?'Stok: '+m.stock+' '+esc(m.unit||''):esc(m.unit||'adet')}${mg!==null?' • Marj %'+mg:''}</span></div><div style="text-align:right"><b class="mono">${fmt(m.sale_price)}</b><div class="g" style="margin-top:6px;justify-content:flex-end"><button class="b bs sm" onclick="matM('${m.id}')">Düzenle</button><button class="b bk sm" onclick="delMat('${m.id}')">Sil</button></div></div></div>`}).join(''):'<div class="em">Malzeme bulunamadı.</div>'}
+function matM(id){if(!S.groups.length)return alert('Önce grup ekleyin.');const m=S.materials.find(x=>x.id===id)||{};
+openM(`<h3>${id?'Malzemeyi Düzenle':'Yeni Malzeme'}</h3><select id="m-g" class="fc">${S.groups.map(g=>`<option value="${g.id}" ${g.id===m.group_id?'selected':''}>${esc(g.name)}</option>`).join('')}</select><input id="m-n" class="fc" placeholder="Malzeme tanımı *" value="${esc(m.name)}"><select id="m-u" class="fc">${UNITS.map(u=>`<option ${u===(m.unit||'adet')?'selected':''}>${u}</option>`).join('')}</select><input id="m-p" type="number" step="any" class="fc" placeholder="Satış fiyatı (TL) *" value="${m.sale_price??''}"><input id="m-c" type="number" step="any" class="fc" placeholder="Alış fiyatı (TL) - sadece sen görürsün" value="${m.cost_price??''}"><input id="m-s" type="number" step="any" class="fc" placeholder="Stok (boş bırakırsan takip edilmez)" value="${m.stock??''}"><button class="b bo blk" onclick="saveMat('${id||''}')">Kaydet</button>`)}
+function saveMat(id){const n=$('m-n').value.trim(),p=parseFloat($('m-p').value);if(!n||isNaN(p))return alert('Malzeme adı ve satış fiyatı giriniz.');
+const s=$('m-s').value,d={group_id:$('m-g').value,name:n,unit:$('m-u').value,sale_price:p,cost_price:parseFloat($('m-c').value)||0,stock:s===''?'':+s},m=S.materials.find(x=>x.id===id);
+if(m)Object.assign(m,d);else S.materials.unshift({id:Date.now().toString(),...d});save();closeM();rInv()}
+function delMat(id){if(confirm('Malzeme silinsin mi?')){S.materials=S.materials.filter(m=>m.id!==id);save();rInv()}}
+function bulk(){const p=parseFloat(prompt('Toplu satış fiyatı değişimi (%). Zam: 10, indirim: -5','10'));if(isNaN(p))return;
+if(!confirm('%'+p+' değişim '+(ig==='all'?'TÜM malzemelere':'seçili gruba')+' uygulansın mı?'))return;
+S.materials.forEach(m=>{if(ig==='all'||m.group_id===ig)m.sale_price=r2(m.sale_price*(1+p/100))});save();rInv()}
+function grpM(){openM(`<h3>Grupları Düzenle</h3><div class="g" style="margin-bottom:12px"><input id="g-n" class="fc" style="margin:0" placeholder="Yeni grup adı"><button class="b bo" onclick="addGrp()">Ekle</button></div>${S.groups.map(g=>`<div class="cd row" style="padding:10px;margin-bottom:8px"><b>${esc(g.name)}</b><div class="g"><button class="b bs sm" onclick="renGrp('${g.id}')">Ad</button><button class="b bk sm" onclick="delGrp('${g.id}')">Sil</button></div></div>`).join('')}`)}
+function addGrp(){const v=$('g-n').value.trim();if(!v)return;S.groups.push({id:Date.now().toString(),name:v});save();grpM();rInv()}
+function renGrp(id){const g=S.groups.find(x=>x.id===id),n=prompt('Yeni grup adı:',g.name);if(n&&n.trim()){g.name=n.trim();save();grpM();rInv()}}
+function delGrp(id){if(confirm('Grup silinsin mi? (Malzemeler Genel altında kalır)')){S.groups=S.groups.filter(g=>g.id!==id);if(ig===id)ig='all';save();grpM();rInv()}}
+
+/* TEKLİF LİSTESİ */
+function rQuo(){const t=$('sq').value.toLowerCase(),d=today();
+$('qp').innerHTML=['all',...Object.keys(ST)].map(k=>`<button class="pl ${qf===k?'on':''}" onclick="qf='${k}';rQuo()">${k==='all'?'Tümü':ST[k]}</button>`).join('');
+const l=S.quotes.filter(q=>(qf==='all'||q.status===qf)&&(qn(q)+cName(q)+(q.project||'')).toLowerCase().includes(t));
+$('ql').innerHTML=l.length?l.map(q=>{const ex=(q.status==='gonderildi'||q.status==='taslak')&&q.valid_until<d;
+return `<div class="cd"><div class="row" style="align-items:flex-start"><div><b>${qn(q)}</b><p class="mu" style="margin-top:2px">${esc(cName(q))}${q.project?' • '+esc(q.project):''}</p><div class="g" style="margin-top:5px;flex-wrap:wrap;align-items:center"><select class="fc sel st-${q.status}" onchange="stChange('${q.id}',this.value)">${Object.keys(ST).map(k=>`<option value="${k}" ${q.status===k?'selected':''}>${ST[k]}</option>`).join('')}</select>${q.hide_prices?'<span class="tg2">Fiyatsız</span>':''}${ex?'<span class="tg2" style="color:#fb7185">Süresi doldu</span>':''}</div></div><b class="mono or">${fmt(q.grand_total)}</b></div>
+<p class="mu s" style="border-top:1px solid var(--bd);margin-top:10px;padding-top:8px">${fd(q.issue_date)} • Geçerlilik: ${fd(q.valid_until)}</p>
+<div class="g" style="margin-top:8px;flex-wrap:wrap"><button class="b bo sm" onclick="openPdf('${q.id}')">PDF</button><button class="b bs sm" onclick="openB('edit','${q.id}')">Düzenle</button><button class="b bs sm" onclick="openB('rev','${q.id}')">Revize</button><button class="b bs sm" onclick="openB('copy','${q.id}')">Kopyala</button><button class="b bk sm" onclick="delQuo('${q.id}')">Sil</button></div></div>`}).join(''):'<div class="em">Teklif bulunamadı.</div>'}
+function stChange(id,v){const q=S.quotes.find(x=>x.id===id);if(q.status==='onaylandi')stock(q,1);q.status=v;if(v==='onaylandi')stock(q,-1);save();rQuo()}
+function delQuo(id){const q=S.quotes.find(x=>x.id===id);if(!confirm(qn(q)+' silinsin mi?'))return;if(q.status==='onaylandi')stock(q,1);S.quotes=S.quotes.filter(x=>x.id!==id);save();rQuo()}
+
+/* TEKLİF HAZIRLAMA */
+function nextNo(){const y=new Date().getFullYear();let m=0;S.quotes.forEach(q=>{const r=/^BK-(\d{4})-(\d+)/.exec(q.no||'');if(r&&+r[1]===y)m=Math.max(m,+r[2])});return 'BK-'+y+'-'+p2(m+1).padStart(4,'0')}
+function openB(mode,id){if(!S.customers.length){alert('Önce müşteri ekleyin.');return tab('customers')}
+const q=id?S.quotes.find(x=>x.id===id):null,pre=q||{};
+B={mode,old:mode==='edit'?q:null,items:[],pay:pre.payment_method||'cash',no:nextNo(),rev:1};
+if(q&&mode!=='copy'){B.no=q.no;B.rev=mode==='rev'?Math.max(...S.quotes.filter(x=>x.no===q.no).map(x=>x.rev||1))+1:q.rev}
+$('b-no').textContent=B.no+(B.rev>1?'-R'+B.rev:'');
+$('b-cust').innerHTML=S.customers.map(c=>`<option value="${c.id}" ${c.id===pre.customer_snapshot?.id?'selected':''}>${esc(c.company_name)}</option>`).join('');
+$('b-st').value=mode==='edit'?q.status:mode==='new'?'gonderildi':'taslak';
+$('b-proj').value=pre.project||'';$('b-hide').checked=!!pre.hide_prices;$('b-profit').value=pre.profit||0;$('b-disc').value=pre.discount_total||0;$('b-vat').value=pre.vat_rate??20;
+$('b-valid').value=q?Math.max(1,days(q.issue_date,q.valid_until)):S.company.valid;
+$('b-cc').value=pre.cc_n||1;$('b-down').value=pre.senet_down||0;$('b-mon').value=pre.senet_n||6;
+B.items=(pre.items||[]).map(it=>({mid:it.mid,name:it.name,unit:it.unit||'',qty:it.quantity,base:it.base??it.unit_price,cost:it.cost||0}));
+show('builder');rItems();setPay(B.pay)}
+function rItems(){$('b-items').innerHTML=B.items.length?B.items.map((it,i)=>`<div class="it"><div style="flex:1"><b>${esc(it.name)}</b> <span class="mu s">${esc(it.unit)}</span><div class="g" style="margin-top:5px"><input type="number" min="0" step="any" class="fc q" value="${it.qty}" oninput="bi(${i},'qty',this.value)"><input type="number" min="0" step="any" class="fc p" value="${it.base}" oninput="bi(${i},'base',this.value)"><span id="lt${i}" class="mono or" style="align-self:center;font-size:11px"></span></div></div><button class="b bk sm" onclick="B.items.splice(${i},1);rItems()">✕</button></div>`).join(''):'<div class="em" style="padding:14px">Henüz malzeme eklenmedi.</div>';calc()}
+function bi(i,k,v){B.items[i][k]=Math.max(0,+v||0);calc()}
+function pickM(g){if(g)pg=g;const l=S.materials.filter(m=>pg==='all'||m.group_id===pg);
+openM(`<h3>Envanterden Seç</h3><div class="pills"><button class="pl ${pg==='all'?'on':''}" onclick="pickM('all')">Tümü</button>${S.groups.map(g=>`<button class="pl ${pg===g.id?'on':''}" onclick="pickM('${g.id}')">${esc(g.name)}</button>`).join('')}</div>${l.length?l.map(m=>`<div class="cd row" style="padding:10px;cursor:pointer" onclick="addItem('${m.id}')"><div><b>${esc(m.name)}</b><span class="or mono s d">${fmt(m.sale_price)} / ${esc(m.unit||'adet')}</span></div><b class="or" style="font-size:18px">+</b></div>`).join(''):'<div class="em">Malzeme yok.</div>'}`)}
+function addItem(id){const m=S.materials.find(x=>x.id===id);if(m)B.items.push({mid:m.id,name:m.name,unit:m.unit||'adet',qty:1,base:m.sale_price,cost:m.cost_price||0});closeM();rItems()}
+function free(){const n=prompt('Kalem adı:');if(!n)return;const p=parseFloat(prompt('Birim fiyat (TL):','0'));B.items.push({mid:'',name:n,unit:'adet',qty:1,base:isNaN(p)?0:p,cost:0});rItems()}
+function setPay(m){B.pay=m;$('pay-cash').className='b '+(m==='cash'?'bo':'bs');$('pay-cc').className='b '+(m==='credit_card'?'bo':'bs');$('pay-sn').className='b '+(m==='promissory_note'?'bo':'bs');
+$('boxcc').classList.toggle('hidden',m!=='credit_card');$('boxsn').classList.toggle('hidden',m!=='promissory_note');calc()}
+function calc(){const pr=+$('b-profit').value||0,disc=+$('b-disc').value||0,vr=+$('b-vat').value||0;let sub=0,cost=0;
+B.items.forEach((it,i)=>{it.up=it.base*(1+pr/100);sub+=it.up*it.qty;cost+=(it.cost||0)*it.qty;const e=$('lt'+i);if(e)e.textContent=fmt(it.up*it.qty)});
+const net=Math.max(0,sub-disc),vat=net*vr/100,cash=net+vat,t=today();let int=0,grand=cash,mon=0,sch=[];
+if(B.pay==='cash')sch=[{label:'Peşin',date:t,amount:r2(cash)}];
+else if(B.pay==='credit_card'){const n=+$('b-cc').value||1;int=cash*(S.ccRates[n]||0)/100;grand=cash+int;mon=grand/n;for(let m=0;m<n;m++)sch.push({label:(m+1)+'. Taksit',date:addM(t,m),amount:r2(mon)})}
+else{const dn=Math.min(cash,+$('b-down').value||0),n=+$('b-mon').value||6,rem=cash-dn;int=rem*S.senetRate*n/100;grand=cash+int;mon=(rem+int)/n;if(dn>0)sch.push({label:'Peşinat',date:t,amount:r2(dn)});for(let m=1;m<=n;m++)sch.push({label:m+'. Senet',date:addM(t,m),amount:r2(mon)})}
+B.calc={sub,disc,vat,int,grand,mon,sch,cost,net};
+$('t-sub').textContent=fmt(sub);$('t-vat').textContent=fmt(vat);$('t-int').textContent=fmt(int);$('t-grand').textContent=fmt(grand);
+$('boxmon').classList.toggle('hidden',B.pay==='cash');$('t-mon').textContent=fmt(mon);
+$('b-sch').classList.toggle('hidden',B.pay==='cash');$('b-sch').innerHTML=B.pay==='cash'?'':'<b class="or">Ödeme Planı</b>'+sch.map(s=>`<div><span>${esc(s.label)} (${fd(s.date)})</span><b class="mono">${fmt(s.amount)}</b></div>`).join('');
+$('t-prof').innerHTML=cost>0?`Tahmini kâr (sadece sen görürsün): <b>${fmt(net-cost)}</b> (%${(net>0?(net-cost)/net*100:0).toFixed(1)})`:'Alış fiyatı girilmiş kalem yok, kâr hesaplanamadı.'}
+function saveQ(){const c=S.customers.find(x=>x.id===$('b-cust').value);if(!c)return alert('Lütfen müşteri seçiniz.');if(!B.items.length)return alert('En az bir malzeme ekleyin.');
+calc();const k=B.calc,old=B.old,t=today(),isd=old?old.issue_date:t;
+const q={id:old?old.id:Date.now().toString(),no:B.no,rev:B.rev,customer_snapshot:c,status:$('b-st').value,project:$('b-proj').value.trim(),issue_date:isd,valid_until:addD(isd,+$('b-valid').value||15),payment_method:B.pay,hide_prices:$('b-hide').checked,vat_rate:+$('b-vat').value,profit:+$('b-profit').value||0,subtotal:k.sub,discount_total:k.disc,vat_total:k.vat,interest_total:k.int,grand_total:k.grand,monthly_amount:k.mon,cost_total:k.cost,cc_n:+$('b-cc').value,senet_down:+$('b-down').value||0,senet_n:+$('b-mon').value,schedule:k.sch.map(s=>({...s,paid:false})),
+items:B.items.map(it=>({mid:it.mid,name:it.name,unit:it.unit,quantity:it.qty,base:it.base,cost:it.cost,unit_price:it.up,total:it.up*it.qty}))};
+if(old){if(old.status==='onaylandi')stock(old,1);q.schedule.forEach((s,i)=>{const o=old.schedule[i];if(o&&o.paid&&o.label===s.label)s.paid=true});S.quotes[S.quotes.findIndex(x=>x.id===old.id)]=q}else S.quotes.unshift(q);
+if(q.status==='onaylandi')stock(q,-1);save();tab('quotes')}
+
+/* PDF */
+function openPdf(id){const q=S.quotes.find(x=>x.id===id),h=q.hide_prices,co=S.company,c=q.customer_snapshot||{},th='padding:5px;text-align:';
+const rows=q.items.map((it,i)=>`<tr style="border-bottom:1px solid #e2e8f0"><td style="padding:5px">${i+1}</td><td style="padding:5px;font-weight:600">${esc(it.name)}</td><td style="${th}center">${it.quantity} ${esc(it.unit||'')}</td>${h?'':`<td style="${th}right">${fmt(it.unit_price)}</td><td style="${th}right;font-weight:700">${fmt(it.total)}</td>`}</tr>`).join('');
+$('pa').innerHTML=`<div style="border-bottom:2px solid #090d16;padding-bottom:10px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-size:17px;font-weight:900">${esc(co.name)}</h2><p style="font-size:10px;color:#64748b">${esc(co.addr)}${co.phone?' • '+esc(co.phone):''}${co.tax?'<br>Vergi: '+esc(co.tax):''}</p></div><div style="text-align:right"><b style="font-size:12px">${qn(q)}</b><br><span style="font-size:10px;color:#64748b">Tarih: ${fd(q.issue_date)}<br>Geçerlilik: ${fd(q.valid_until)}</span></div></div>
+<div style="background:#f8fafc;padding:10px;border-radius:8px;margin-bottom:10px;border:1px solid #e2e8f0"><b style="font-size:12px">Sayın: ${esc(c.company_name||'-')}</b><br><span style="color:#64748b">Yetkili: ${esc(c.authorized_person||'-')} • ${esc(c.phone||'-')}</span>${c.address?`<br><span style="color:#94a3b8;font-size:10px">Adres: ${esc(c.address)}</span>`:''}${q.project?`<br><b style="font-size:10px">Proje: ${esc(q.project)}</b>`:''}</div>
+<table style="width:100%;border-collapse:collapse;margin-bottom:12px"><thead><tr style="background:#f1f5f9;text-align:left"><th style="padding:5px">Sıra</th><th style="padding:5px">Malzeme</th><th style="${th}center">Miktar</th>${h?'':`<th style="${th}right">Birim</th><th style="${th}right">Toplam</th>`}</tr></thead><tbody>${rows}</tbody></table>
+${h?'<div style="background:#fffbeb;border:1px solid #fde68a;padding:10px;border-radius:8px;color:#92400e;margin-bottom:10px">* Bu belge keşif ve metraj mutabakatı amacıyla düzenlenmiştir.</div>':`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px"><div><b style="font-size:10px;color:#64748b">ÖDEME KOŞULLARI</b><p style="font-weight:700">${q.payment_method==='cash'?'Peşin Ödeme':q.payment_method==='credit_card'?'Kredi Kartı Taksitli':'Senetli Satış'}</p>${q.payment_method!=='cash'?`<table style="width:100%;font-size:9px;margin-top:4px;border-collapse:collapse">${q.schedule.map(s=>`<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:2px">${esc(s.label)} (${fd(s.date)})</td><td style="padding:2px;text-align:right;font-weight:700">${fmt(s.amount)}</td></tr>`).join('')}</table>`:''}</div>
+<div style="text-align:right;line-height:1.7"><div>Ara Toplam: <b>${fmt(q.subtotal)}</b></div>${q.discount_total>0?`<div style="color:#e11d48">İskonto: -${fmt(q.discount_total)}</div>`:''}<div>KDV: <b>${fmt(q.vat_total)}</b></div>${q.interest_total>0?`<div>Vade Farkı: <b>+${fmt(q.interest_total)}</b></div>`:''}<div style="font-size:13px;font-weight:900;border-top:1px solid #090d16;padding-top:4px;margin-top:4px">Genel Toplam: ${fmt(q.grand_total)}</div></div></div>`}
+<p style="font-size:10px;color:#64748b">Bu teklif ${fd(q.valid_until)} tarihine kadar geçerlidir.${co.iban?` IBAN: <b>${esc(co.iban)}</b>`:''}</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px;text-align:center;font-size:10px"><div><b>${esc(co.name)}</b><div style="height:35px"></div><span style="color:#94a3b8">Kaşe / İmza</span></div><div><b>Müşteri Onayı</b><div style="height:35px"></div><span style="color:#94a3b8">Kaşe / İmza</span></div></div>`;
+$('b-wa').onclick=()=>{let p=(c.phone||'').replace(/\D/g,'').replace(/^0+/,'');if(!p.startsWith('90'))p='90'+p;
+let t=`Sayın ${c.company_name},\n${co.name} olarak hazırladığımız ${qn(q)} numaralı teklif bilgilerinize sunulmuştur.`;if(!h)t+=`\nGenel Toplam: ${fmt(q.grand_total)}`;t+=`\nGeçerlilik: ${fd(q.valid_until)}`;window.open('https://wa.me/'+p+'?text='+encodeURIComponent(t))};
+$('mp').classList.remove('hidden')}
+
+/* TAHSİLAT */
+function rPay(){const t=today(),wait=pays(false),ov=wait.filter(p=>p.date<t).reduce((x,p)=>x+p.amount,0),l=pf==='paid'?pays(true).reverse():wait;
+$('ps').innerHTML=`<div class="cd gl"><span class="or s" style="font-weight:900">BEKLEYEN TAHSİLAT</span><h2 class="mono" style="font-size:24px">${fmt(wait.reduce((x,p)=>x+p.amount,0))}</h2><p class="mu s">Vadesi geçen: <b style="color:#fb7185">${fmt(ov)}</b> • Sadece onaylı tekliflerin vadeleri listelenir</p></div>`;
+$('pp').innerHTML=[['wait','Bekleyen'],['paid','Ödenen']].map(x=>`<button class="pl ${pf===x[0]?'on':''}" onclick="pf='${x[0]}';rPay()">${x[1]}</button>`).join('');
+$('pl').innerHTML=l.length?l.map(p=>{const late=!p.paid&&p.date<t,dl=days(p.date,t),soon=!p.paid&&!late&&days(t,p.date)<=7;
+return `<div class="cd row" style="${late?'border-color:#e11d48':soon?'border-color:#f59e0b':''}"><div><b>${esc(cName(p.q))}</b><span class="mu s d">${qn(p.q)} • ${esc(p.label)} • ${fd(p.date)}</span>${late?`<span class="s" style="color:#fb7185;font-weight:800">${dl} gün gecikti</span>`:soon?'<span class="s" style="color:#f59e0b;font-weight:800">Vadesi yaklaşıyor</span>':''}</div><div style="text-align:right"><b class="mono">${fmt(p.amount)}</b><br><button class="b ${p.paid?'bs':'bg'} sm" style="margin-top:5px" onclick="togglePaid('${p.q.id}',${p.i})">${p.paid?'Geri al':'Ödendi'}</button></div></div>`}).join(''):'<div class="em">Kayıt yok.</div>'}
+function togglePaid(id,i){const s=S.quotes.find(x=>x.id===id).schedule[i];s.paid=!s.paid;save();rPay()}
+
+/* AYARLAR */
+function fillSet(){const c=S.company;$('s-senet').value=S.senetRate;$('s-valid').value=c.valid;$('s-name').value=c.name;$('s-addr').value=c.addr;$('s-phone').value=c.phone;$('s-tax').value=c.tax;$('s-iban').value=c.iban}
+function saveSet(){S.senetRate=parseFloat($('s-senet').value)||2.5;S.company={name:$('s-name').value.trim()||defCo.name,addr:$('s-addr').value.trim(),phone:$('s-phone').value.trim(),tax:$('s-tax').value.trim(),iban:$('s-iban').value.trim(),valid:+$('s-valid').value||15};save();alert('Ayarlar kaydedildi.')}
+function exportD(){const b=new Blob([JSON.stringify({groups:S.groups,materials:S.materials,customers:S.customers,quotes:S.quotes,senetRate:S.senetRate,ccRates:S.ccRates,company:S.company})],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='bkyapi_erp_'+today()+'.json';a.click()}
+function importD(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.groups||!d.materials)return alert('Geçersiz yedek.');
+Object.assign(S,{groups:d.groups,materials:d.materials,customers:d.customers||[],quotes:d.quotes||[],senetRate:+d.senetRate||2.5,ccRates:d.ccRates||defCc,company:{...defCo,...d.company}});migrate();save();alert('Yedek yüklendi.');location.reload()}catch(x){alert('Dosya hatası.')}};r.readAsText(f)}
+
+/* BAŞLAT */
+$('b-mon').innerHTML=Array.from({length:12},(_,i)=>`<option value="${i+1}" ${i===5?'selected':''}>${i+1} Ay</option>`).join('');
+$('b-cc').innerHTML=Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1} Taksit (+%${S.ccRates[i+1]||0})</option>`).join('');
+tab('dashboard');
+</script></body></html>
