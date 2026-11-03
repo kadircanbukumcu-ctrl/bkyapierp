@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BK YAPI - ERP & CRM Teklif Sistemi</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase Kütüphanesi -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; border: none !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 font-sans pb-24 text-slate-800 antialiased select-none">
+
+  <!-- Üst Başlık Barı & BK YAPI Kurumsal Logo -->
+  <header class="bg-slate-900 text-white p-3.5 sticky top-0 z-40 shadow-lg flex justify-between items-center">
+    <div class="flex items-center gap-2.5">
+      <!-- BK YAPI Geometrik Altın/Lacivert Logo -->
+      <div class="relative w-9 h-9 bg-gradient-to-tr from-amber-500 to-amber-300 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20 border border-amber-200">
+        <span class="text-slate-950 font-black text-sm tracking-tighter">BK</span>
+        <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-blue-600 rounded-md flex items-center justify-center border border-white">
+          <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h1 class="font-black text-base tracking-wider text-white">BK YAPI</h1>
+          <span class="text-[9px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.2 rounded">ERP</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-medium tracking-tight">Teklif & Malzeme Yönetimi</p>
+      </div>
+    </div>
+    <span class="text-[11px] bg-slate-800 text-emerald-400 font-bold px-2.5 py-1 rounded-full border border-slate-700 flex items-center gap-1">
+      <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Canlı
+    </span>
+  </header>
+
+  <!-- Ana İçerik Konteyneri -->
+  <main class="max-w-md mx-auto p-4" id="appRoot">
+
+    <!-- 1. PANEL (DASHBOARD) -->
+    <div id="view-dashboard" class="space-y-4">
+      <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white p-5 rounded-2xl shadow-xl border border-slate-800 relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-amber-500/10 rounded-full blur-2xl"></div>
+        <span class="text-xs text-amber-300 font-bold uppercase tracking-wider">Toplam Teklif Hacmi</span>
+        <h2 id="dash-total-volume" class="text-3xl font-black mt-1 font-mono text-white">0,00 ₺</h2>
+        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-xs text-slate-300">
+          <span>BK YAPI Portalı</span>
+          <span class="text-amber-400 font-bold">Aktif Sistem</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-400 font-semibold">Kayıtlı Müşteri</span>
+          <p id="dash-customer-count" class="text-2xl font-black text-slate-800 mt-1">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-400 font-semibold">Malzeme Çeşidi</span>
+          <p id="dash-material-count" class="text-2xl font-black text-slate-800 mt-1">0</p>
+        </div>
+      </div>
+
+      <button onclick="switchTab('quote-builder')" class="w-full bg-blue-700 hover:bg-blue-800 active:scale-[0.99] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-700/20 transition flex items-center justify-center gap-2">
+        <span>+ Yeni Teklif Oluştur</span>
+      </button>
+    </div>
+
+    <!-- 2. MÜŞTERİ YÖNETİMİ -->
+    <div id="view-customers" class="hidden space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-lg text-slate-900">Müşteriler</h2>
+        <button onclick="toggleModal('modal-add-customer', true)" class="bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold">+ Müşteri Ekle</button>
+      </div>
+      <div id="customerList" class="space-y-2">Yükleniyor...</div>
+    </div>
+
+    <!-- 3. MALZEME & GRUP YÖNETİMİ -->
+    <div id="view-inventory" class="hidden space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="font-bold text-lg text-slate-900">Malzeme Envanteri</h2>
+          <p class="text-[11px] text-slate-400">Gruplara göre fiyat listesi</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="toggleModal('modal-manage-groups', true)" class="bg-slate-200 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg font-bold">Gruplar</button>
+          <button onclick="toggleModal('modal-add-material', true)" class="bg-blue-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold">+ Malzeme</button>
+        </div>
+      </div>
+
+      <!-- Dinamik Grup Filtre Butonları -->
+      <div id="groupFilterBar" class="flex gap-2 overflow-x-auto pb-2 text-xs no-scrollbar"></div>
+
+      <div id="materialList" class="space-y-2">Yükleniyor...</div>
+    </div>
+
+    <!-- 4. TEKLİF LİSTESİ -->
+    <div id="view-quotes" class="hidden space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-lg text-slate-900">Hazırlanan Teklifler</h2>
+        <button onclick="switchTab('quote-builder')" class="bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-semibold">+ Teklif Ver</button>
+      </div>
+      <div id="quotesList" class="space-y-2">Yükleniyor...</div>
+    </div>
+
+    <!-- 5. TEKLİF HAZIRLAMA MODÜLÜ -->
+    <div id="view-quote-builder" class="hidden space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+        <button onclick="switchTab('dashboard')" class="text-xs font-bold text-slate-500">← Geri</button>
+        <div class="text-center">
+          <span class="text-[10px] text-slate-400 block">TEKLİF KODU</span>
+          <span id="builder-quote-no" class="font-black text-slate-900 text-sm">BK-2026-0001</span>
+        </div>
+        <button onclick="saveQuotation()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-lg font-bold">Kaydet</button>
+      </div>
+
+      <!-- Müşteri Seçimi -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200">
+        <label class="text-[11px] font-bold text-slate-500 uppercase">Müşteri Seçin</label>
+        <select id="builder-customer-select" class="w-full mt-1 p-2 bg-slate-50 border rounded-lg text-xs font-semibold"></select>
+      </div>
+
+      <!-- Eklenen Malzemeler -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+        <div class="flex justify-between items-center">
+          <label class="text-[11px] font-bold text-slate-500 uppercase">Kalemler</label>
+          <button onclick="openSelectMaterialModal()" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded font-bold border border-blue-200">+ Envanterden Ekle</button>
+        </div>
+        <div id="builder-items-list" class="space-y-2">
+          <div class="text-center py-4 text-xs text-slate-400">Henüz malzeme seçilmedi.</div>
+        </div>
+      </div>
+
+      <!-- Kâr Artış Oranı (Yalnızca Yönetim - Gizli Parametre) -->
+      <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-3 rounded-xl border border-amber-200 flex justify-between items-center">
+        <div>
+          <span class="text-xs font-bold text-amber-950 block">Kâr / Fiyat Artışı (%)</span>
+          <span class="text-[10px] text-amber-700">Müşteriye ve PDF'e kesinlikle basılmaz</span>
+        </div>
+        <input type="number" id="builder-profit-rate" value="0" min="0" oninput="calculateTotal()" class="w-16 p-1.5 text-center bg-white border border-amber-300 rounded-lg text-xs font-bold text-amber-900">
+      </div>
+
+      <!-- İskonto & KDV -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200 grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[11px] font-bold text-slate-500 uppercase">İskonto (TL)</label>
+          <input type="number" id="builder-discount" value="0" min="0" oninput="calculateTotal()" class="w-full mt-1 p-2 bg-slate-50 border rounded-lg text-xs font-bold">
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-slate-500 uppercase">KDV Oranı (%)</label>
+          <select id="builder-vat" onchange="calculateTotal()" class="w-full mt-1 p-2 bg-slate-50 border rounded-lg text-xs font-bold">
+            <option value="0">%0 (Muaf)</option>
+            <option value="1">%1</option>
+            <option value="10">%10</option>
+            <option value="20" selected>%20</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Ödeme Yöntemi -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+        <label class="text-[11px] font-bold text-slate-500 uppercase">Ödeme Koşulları</label>
+        <div class="grid grid-cols-3 gap-1">
+          <button type="button" onclick="setPaymentMethod('cash')" id="btn-pay-cash" class="py-2 text-xs font-bold rounded-lg border bg-blue-700 text-white">Peşin</button>
+          <button type="button" onclick="setPaymentMethod('credit_card')" id="btn-pay-card" class="py-2 text-xs font-bold rounded-lg border bg-slate-50 text-slate-600">Kredi Kartı</button>
+          <button type="button" onclick="setPaymentMethod('promissory_note')" id="btn-pay-senet" class="py-2 text-xs font-bold rounded-lg border bg-slate-50 text-slate-600">Senet</button>
+        </div>
+
+        <div id="box-card-settings" class="hidden pt-2 border-t text-xs space-y-2">
+          <div class="flex justify-between items-center">
+            <span>Taksit Sayısı:</span>
+            <select id="builder-cc-installments" onchange="calculateTotal()" class="p-1 border rounded bg-white font-bold">
+              <option value="1">Tek Çekim (%0)</option>
+              <option value="3">3 Taksit (%5)</option>
+              <option value="6">6 Taksit (%10)</option>
+              <option value="12">12 Taksit (%18)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="box-senet-settings" class="hidden pt-2 border-t text-xs space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <span>Peşinat (TL):</span>
+              <input type="number" id="builder-senet-down" value="0" oninput="calculateTotal()" class="w-full p-1 border rounded text-xs">
+            </div>
+            <div>
+              <span>Vade:</span>
+              <select id="builder-senet-months" onchange="calculateTotal()" class="w-full p-1 border rounded text-xs font-bold">
+                <option value="3">3 Ay</option>
+                <option value="6" selected>6 Ay</option>
+                <option value="12">12 Ay</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toplam Paneli -->
+      <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-1.5 text-xs shadow-lg">
+        <div class="flex justify-between text-slate-400"><span>Ara Toplam:</span><span id="txt-subtotal">0,00 ₺</span></div>
+        <div class="flex justify-between text-slate-400"><span>KDV:</span><span id="txt-vat">0,00 ₺</span></div>
+        <div class="flex justify-between text-slate-400"><span>Vade / Farkı:</span><span id="txt-interest">0,00 ₺</span></div>
+        <div class="flex justify-between text-base font-black text-white pt-2 border-t border-slate-800">
+          <span>Genel Toplam:</span>
+          <span id="txt-grandtotal" class="text-amber-400 font-mono text-lg">0,00 ₺</span>
+        </div>
+        <div id="box-monthly-note" class="text-right text-[11px] text-blue-300 font-bold hidden">
+          Aylık Ödeme: <span id="txt-monthly">0,00 ₺</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALLER -->
+  <!-- Modal: Grup Yönetimi -->
+  <div id="modal-manage-groups" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-4 space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-sm">Malzeme Gruplarını Düzenle</h3>
+        <button onclick="toggleModal('modal-manage-groups', false)" class="text-slate-400 font-bold p-1">✕</button>
+      </div>
+      <div class="flex gap-2">
+        <input type="text" id="newGroupName" placeholder="Örn: Demir / Çimento" class="flex-1 p-2 border rounded-lg text-xs">
+        <button onclick="addNewGroup()" class="bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-bold">Ekle</button>
+      </div>
+      <div id="groupsListManage" class="max-h-48 overflow-y-auto space-y-1">Yükleniyor...</div>
+    </div>
+  </div>
+
+  <!-- Modal: Malzeme Ekle -->
+  <div id="modal-add-material" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-4 space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-sm">Yeni Malzeme Kaydet</h3>
+        <button onclick="toggleModal('modal-add-material', false)" class="text-slate-400 font-bold p-1">✕</button>
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-slate-500">Grup / Kategori</label>
+        <select id="newMatGroupSelect" class="w-full mt-1 p-2 border rounded-lg text-xs"></select>
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-slate-500">Malzeme Tanımı</label>
+        <input type="text" id="newMatName" class="w-full mt-1 p-2 border rounded-lg text-xs" placeholder="Örn: 10'luk İnşaat Demiri">
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-slate-500">Satış Fiyatı (TL)</label>
+        <input type="number" id="newMatPrice" class="w-full mt-1 p-2 border rounded-lg text-xs font-bold" placeholder="0.00">
+      </div>
+      <button onclick="saveNewMaterial()" class="w-full bg-blue-700 text-white py-2.5 rounded-lg text-xs font-bold">Kaydet</button>
+    </div>
+  </div>
+
+  <!-- Modal: Müşteri Ekle -->
+  <div id="modal-add-customer" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-4 space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-sm">Yeni Müşteri</h3>
+        <button onclick="toggleModal('modal-add-customer', false)" class="text-slate-400 font-bold p-1">✕</button>
+      </div>
+      <input type="text" id="newCustName" placeholder="Firma Adı *" class="w-full p-2 border rounded-lg text-xs">
+      <input type="text" id="newCustPerson" placeholder="Yetkili Kişi" class="w-full p-2 border rounded-lg text-xs">
+      <input type="text" id="newCustPhone" placeholder="Telefon (WhatsApp) *" class="w-full p-2 border rounded-lg text-xs">
+      <input type="text" id="newCustAddress" placeholder="Şantiye / Adres" class="w-full p-2 border rounded-lg text-xs">
+      <button onclick="saveNewCustomer()" class="w-full bg-blue-700 text-white py-2.5 rounded-lg text-xs font-bold">Kaydet</button>
+    </div>
+  </div>
+
+  <!-- Modal: Envanterden Seçim -->
+  <div id="modal-select-material" class="hidden fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-4 max-h-[80vh] flex flex-col space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-sm">Envanterden Kalem Seç</h3>
+        <button onclick="toggleModal('modal-select-material', false)" class="text-slate-400 font-bold p-1">✕</button>
+      </div>
+      <div id="modalGroupTabs" class="flex gap-2 overflow-x-auto pb-1 text-xs no-scrollbar"></div>
+      <div id="modalMaterialsList" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Modal: BK YAPI A4 PDF Önizleme & WhatsApp -->
+  <div id="modal-print-view" class="hidden fixed inset-0 bg-black/75 z-50 overflow-y-auto p-2 sm:p-6 flex items-center justify-center">
+    <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[95vh]">
+      <div class="bg-slate-900 text-white p-3 flex justify-between items-center no-print">
+        <span class="text-xs font-bold flex items-center gap-2">
+          <span class="w-2 h-2 bg-amber-400 rounded-full"></span> BK YAPI Belge Motoru
+        </span>
+        <div class="flex gap-2">
+          <button id="btnShareWhatsapp" class="bg-emerald-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-emerald-700">WhatsApp</button>
+          <button onclick="window.print()" class="bg-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-blue-700">Yazdır / PDF</button>
+          <button onclick="toggleModal('modal-print-view', false)" class="text-slate-400 px-2 font-bold">✕</button>
+        </div>
+      </div>
+      <div id="printArea" class="p-8 text-xs bg-white text-slate-800 space-y-6 overflow-y-auto font-sans"></div>
+    </div>
+  </div>
+
+  <!-- Sabit Alt Gezinti Menüsü -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-200 z-40 max-w-md mx-auto flex justify-around py-2.5 shadow-lg">
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-blue-700 font-bold text-[10px]" id="nav-dashboard">Panel</button>
+    <button onclick="switchTab('customers')" class="flex flex-col items-center text-slate-500 text-[10px]" id="nav-customers">Müşteriler</button>
+    <button onclick="switchTab('inventory')" class="flex flex-col items-center text-slate-500 text-[10px]" id="nav-inventory">Envanter</button>
+    <button onclick="switchTab('quotes')" class="flex flex-col items-center text-slate-500 text-[10px]" id="nav-quotes">Teklifler</button>
+  </nav>
+
+  <!-- JAVASCRIPT KODLARI -->
+  <script>
+    const SUPABASE_URL = "https://vjwqqakqitjqrjjyvycj.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqd3FxYWtxaXRqcXJqanl2eWNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2OTg5OTgsImV4cCI6MjEwOTI3NDk5OH0.OxBI29pqMPuA0kq42_zsTYZU7CWE6NcjhDixXoJiYCs";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let groups = [];
+    let materials = [];
+    let customers = [];
+    let quotes = [];
+    let activeGroupId = 'all';
+    let builderItems = [];
+    let paymentMethod = 'cash';
+    let currentCalculations = {};
+
+    window.onload = async () => {
+      await fetchAllData();
+      renderDashboard();
+    };
+
+    async function fetchAllData() {
+      try {
+        const { data: gData } = await supabase.from('material_groups').select('*').order('name');
+        groups = gData || [];
+
+        const { data: mData } = await supabase.from('materials').select('*, material_groups(name)').order('name');
+        materials = mData || [];
+
+        const { data: cData } = await supabase.from('customers').select('*').order('company_name');
+        customers = cData || [];
+
+        const { data: qData } = await supabase.from('quotations').select('*').order('created_at', { ascending: false });
+        quotes = qData || [];
+
+        renderCustomers();
+        renderInventory();
+        renderQuotes();
+        renderDashboard();
+      } catch (e) {
+        console.error("Veri çekme hatası:", e);
+      }
+    }
+
+    window.switchTab = function(tabId) {
+      ['dashboard', 'customers', 'inventory', 'quotes', 'quote-builder'].forEach(t => {
+        const el = document.getElementById(`view-${t}`);
+        if (el) el.classList.add('hidden');
+        const nav = document.getElementById(`nav-${t}`);
+        if (nav) nav.className = "flex flex-col items-center text-slate-500 text-[10px]";
+      });
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.className = "flex flex-col items-center text-blue-700 font-bold text-[10px]";
+
+      if (tabId === 'quote-builder') initQuoteBuilder();
+    };
+
+    window.toggleModal = function(id, show) {
+      document.getElementById(id).classList.toggle('hidden', !show);
+    };
+
+    // --- GRUP & MALZEME İŞLEMLERİ ---
+    function renderInventory() {
+      const bar = document.getElementById('groupFilterBar');
+      bar.innerHTML = `<button onclick="filterMaterialsByGroup('all')" class="px-3 py-1.5 rounded-full font-bold whitespace-nowrap ${activeGroupId === 'all' ? 'bg-slate-900 text-white' : 'bg-white border text-slate-600'}">Tümü (${materials.length})</button>`;
+      
+      groups.forEach(g => {
+        const count = materials.filter(m => m.group_id === g.id).length;
+        bar.innerHTML += `<button onclick="filterMaterialsByGroup('${g.id}')" class="px-3 py-1.5 rounded-full font-bold whitespace-nowrap ${activeGroupId === g.id ? 'bg-slate-900 text-white' : 'bg-white border text-slate-600'}">${g.name} (${count})</button>`;
+      });
+
+      const list = document.getElementById('materialList');
+      const filtered = activeGroupId === 'all' ? materials : materials.filter(m => m.group_id === activeGroupId);
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-xl border border-dashed border-slate-200">Bu grupta henüz malzeme yok.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(m => `
+        <div class="bg-white p-3 rounded-xl border border-slate-200 flex justify-between items-center shadow-sm">
+          <div>
+            <span class="text-[9px] font-bold text-amber-600 uppercase tracking-wider block">${m.material_groups?.name || 'Genel'}</span>
+            <span class="font-bold text-xs text-slate-900">${m.name}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-black text-sm text-slate-900 font-mono">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
+            <button onclick="deleteMaterial('${m.id}')" class="text-rose-500 font-bold text-xs p-1">Sil</button>
+          </div>
+        </div>
+      `).join('');
+
+      const sel = document.getElementById('newMatGroupSelect');
+      sel.innerHTML = groups.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+
+      const gList = document.getElementById('groupsListManage');
+      gList.innerHTML = groups.map(g => `
+        <div class="flex justify-between items-center p-2 bg-slate-50 border rounded-lg text-xs">
+          <span class="font-medium">${g.name}</span>
+          <button onclick="deleteGroup('${g.id}')" class="text-rose-600 font-bold text-[11px]">Sil</button>
+        </div>
+      `).join('');
+    }
+
+    window.filterMaterialsByGroup = function(gid) {
+      activeGroupId = gid;
+      renderInventory();
+    };
+
+    window.addNewGroup = async function() {
+      const name = document.getElementById('newGroupName').value.trim();
+      if (!name) return;
+      await supabase.from('material_groups').insert([{ name }]);
+      document.getElementById('newGroupName').value = '';
+      await fetchAllData();
+    };
+
+    window.deleteGroup = async function(id) {
+      if (!confirm('Grup silinsin mi?')) return;
+      await supabase.from('material_groups').delete().eq('id', id);
+      await fetchAllData();
+    };
+
+    window.saveNewMaterial = async function() {
+      const group_id = document.getElementById('newMatGroupSelect').value;
+      const name = document.getElementById('newMatName').value.trim();
+      const sale_price = parseFloat(document.getElementById('newMatPrice').value);
+      if (!name || isNaN(sale_price)) { alert('Malzeme adı ve fiyatı giriniz.'); return; }
+
+      await supabase.from('materials').insert([{ name, sale_price, group_id }]);
+      toggleModal('modal-add-material', false);
+      document.getElementById('newMatName').value = '';
+      document.getElementById('newMatPrice').value = '';
+      await fetchAllData();
+    };
+
+    window.deleteMaterial = async function(id) {
+      if (!confirm('Malzemeyi silmek istediğinize emin misiniz?')) return;
+      await supabase.from('materials').delete().eq('id', id);
+      await fetchAllData();
+    };
+
+    // --- MÜŞTERİ YÖNETİMİ ---
+    function renderCustomers() {
+      const list = document.getElementById('customerList');
+      if (customers.length === 0) {
+        list.innerHTML = '<div class="text-center py-6 text-xs text-slate-400">Henüz müşteri eklenmedi.</div>';
+        return;
+      }
+      list.innerHTML = customers.map(c => `
+        <div class="bg-white p-3 rounded-xl border border-slate-200 flex justify-between items-center shadow-sm">
+          <div>
+            <h4 class="font-bold text-xs text-slate-900">${c.company_name}</h4>
+            <p class="text-[11px] text-slate-500">${c.authorized_person || '-'} • ${c.phone}</p>
+          </div>
+          <button onclick="deleteCustomer('${c.id}')" class="text-rose-500 text-xs font-bold p-1">Sil</button>
+        </div>
+      `).join('');
+    }
+
+    window.saveNewCustomer = async function() {
+      const company_name = document.getElementById('newCustName').value.trim();
+      const authorized_person = document.getElementById('newCustPerson').value.trim();
+      const phone = document.getElementById('newCustPhone').value.trim();
+      const address = document.getElementById('newCustAddress').value.trim();
+      if (!company_name || !phone) { alert('Firma adı ve telefon zorunludur.'); return; }
+
+      await supabase.from('customers').insert([{ company_name, authorized_person, phone, address }]);
+      toggleModal('modal-add-customer', false);
+      document.getElementById('newCustName').value = '';
+      document.getElementById('newCustPerson').value = '';
+      document.getElementById('newCustPhone').value = '';
+      document.getElementById('newCustAddress').value = '';
+      await fetchAllData();
+    };
+
+    window.deleteCustomer = async function(id) {
+      if (!confirm('Müşteri silinsin mi?')) return;
+      await supabase.from('customers').delete().eq('id', id);
+      await fetchAllData();
+    };
+
+    // --- TEKLİF & HESAPLAMA MOTORU ---
+    function initQuoteBuilder() {
+      builderItems = [];
+      const quoteNo = `BK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+      document.getElementById('builder-quote-no').innerText = quoteNo;
+      
+      const sel = document.getElementById('builder-customer-select');
+      sel.innerHTML = customers.map(c => `<option value="${c.id}">${c.company_name} (${c.authorized_person || ''})</option>`).join('');
+
+      renderBuilderItems();
+      calculateTotal();
+    }
+
+    window.openSelectMaterialModal = function() {
+      toggleModal('modal-select-material', true);
+      renderModalMaterials('all');
+    };
+
+    window.renderModalMaterials = function(gid) {
+      const tabs = document.getElementById('modalGroupTabs');
+      tabs.innerHTML = `<button onclick="renderModalMaterials('all')" class="px-2.5 py-1 rounded-full font-bold whitespace-nowrap ${gid === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100'}">Tümü</button>`;
+      groups.forEach(g => {
+        tabs.innerHTML += `<button onclick="renderModalMaterials('${g.id}')" class="px-2.5 py-1 rounded-full font-bold whitespace-nowrap ${gid === g.id ? 'bg-slate-900 text-white' : 'bg-slate-100'}">${g.name}</button>`;
+      });
+
+      const list = document.getElementById('modalMaterialsList');
+      const filtered = gid === 'all' ? materials : materials.filter(m => m.group_id === gid);
+      list.innerHTML = filtered.map(m => `
+        <div onclick="addMaterialToQuote('${m.id}')" class="p-2.5 bg-slate-50 border rounded-xl flex justify-between items-center cursor-pointer hover:bg-amber-50">
+          <div>
+            <span class="text-[9px] text-amber-700 font-bold block">${m.material_groups?.name || 'Genel'}</span>
+            <span class="font-bold text-xs">${m.name}</span>
+          </div>
+          <span class="font-bold text-xs text-blue-800">${Number(m.sale_price).toLocaleString('tr-TR')} ₺ +</span>
+        </div>
+      `).join('');
+    };
+
+    window.addMaterialToQuote = function(mid) {
+      const mat = materials.find(m => m.id === mid);
+      if (!mat) return;
+      builderItems.push({
+        material_id: mat.id,
+        material_name: mat.name,
+        quantity: 1,
+        base_price: Number(mat.sale_price)
+      });
+      toggleModal('modal-select-material', false);
+      renderBuilderItems();
+      calculateTotal();
+    };
+
+    function renderBuilderItems() {
+      const list = document.getElementById('builder-items-list');
+      if (builderItems.length === 0) {
+        list.innerHTML = '<div class="text-center py-4 text-xs text-slate-400">Henüz malzeme eklenmedi.</div>';
+        return;
+      }
+
+      list.innerHTML = builderItems.map((item, idx) => `
+        <div class="p-2 bg-slate-50 border rounded-xl flex items-center justify-between text-xs">
+          <div class="flex-1">
+            <span class="font-bold text-slate-800 block">${item.material_name}</span>
+            <div class="flex gap-2 mt-1">
+              <input type="number" min="1" value="${item.quantity}" onchange="updateItemQty(${idx}, this.value)" class="w-14 p-1 border rounded text-center font-bold">
+              <input type="number" value="${item.base_price}" onchange="updateItemPrice(${idx}, this.value)" class="w-20 p-1 border rounded text-right font-semibold">
+            </div>
+          </div>
+          <button onclick="removeBuilderItem(${idx})" class="text-rose-500 font-bold p-2">✕</button>
+        </div>
+      `).join('');
+    }
+
+    window.updateItemQty = function(idx, val) { builderItems[idx].quantity = Number(val) || 1; calculateTotal(); };
+    window.updateItemPrice = function(idx, val) { builderItems[idx].base_price = Number(val) || 0; calculateTotal(); };
+    window.removeBuilderItem = function(idx) { builderItems.splice(idx, 1); renderBuilderItems(); calculateTotal(); };
+
+    window.setPaymentMethod = function(method) {
+      paymentMethod = method;
+      ['cash', 'credit_card', 'promissory_note'].forEach(m => {
+        document.getElementById(`btn-pay-${m === 'credit_card' ? 'card' : m === 'promissory_note' ? 'senet' : 'cash'}`).className =
+          paymentMethod === m ? "py-2 text-xs font-bold rounded-lg border bg-blue-700 text-white" : "py-2 text-xs font-bold rounded-lg border bg-slate-50 text-slate-600";
+      });
+      document.getElementById('box-card-settings').classList.toggle('hidden', paymentMethod !== 'credit_card');
+      document.getElementById('box-senet-settings').classList.toggle('hidden', paymentMethod !== 'promissory_note');
+      calculateTotal();
+    };
+
+    window.calculateTotal = function() {
+      const profitRate = Number(document.getElementById('builder-profit-rate').value) || 0;
+      const discount = Number(document.getElementById('builder-discount').value) || 0;
+      const vatRate = Number(document.getElementById('builder-vat').value) || 0;
+
+      let rawSubtotal = 0;
+      builderItems.forEach(item => {
+        const unitWithProfit = item.base_price * (1 + profitRate / 100);
+        rawSubtotal += unitWithProfit * item.quantity;
+      });
+
+      const discountedSubtotal = Math.max(0, rawSubtotal - discount);
+      const vatAmount = discountedSubtotal * (vatRate / 100);
+      const cashTotal = discountedSubtotal + vatAmount;
+
+      let interestAmount = 0;
+      let grandTotal = cashTotal;
+      let monthly = 0;
+
+      if (paymentMethod === 'credit_card') {
+        const inst = Number(document.getElementById('builder-cc-installments').value) || 1;
+        const rates = { 1: 0, 3: 5, 6: 10, 12: 18 };
+        interestAmount = cashTotal * ((rates[inst] || 0) / 100);
+        grandTotal = cashTotal + interestAmount;
+        monthly = grandTotal / inst;
+      } else if (paymentMethod === 'promissory_note') {
+        const down = Math.min(cashTotal, Number(document.getElementById('builder-senet-down').value) || 0);
+        const months = Number(document.getElementById('builder-senet-months').value) || 6;
+        const remaining = cashTotal - down;
+        interestAmount = remaining * ((2.5 * months) / 100);
+        grandTotal = down + remaining + interestAmount;
+        monthly = (remaining + interestAmount) / months;
+      }
+
+      currentCalculations = { rawSubtotal, discount, vatAmount, cashTotal, interestAmount, grandTotal, monthly };
+
+      document.getElementById('txt-subtotal').innerText = rawSubtotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
+      document.getElementById('txt-vat').innerText = vatAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
+      document.getElementById('txt-interest').innerText = interestAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
+      document.getElementById('txt-grandtotal').innerText = grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
+
+      const monthBox = document.getElementById('box-monthly-note');
+      if (paymentMethod !== 'cash') {
+        monthBox.classList.remove('hidden');
+        document.getElementById('txt-monthly').innerText = monthly.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
+      } else {
+        monthBox.classList.add('hidden');
+      }
+    };
+
+    window.saveQuotation = async function() {
+      const customer_id = document.getElementById('builder-customer-select').value;
+      if (!customer_id) { alert('Müşteri seçiniz.'); return; }
+      if (builderItems.length === 0) { alert('En az 1 malzeme ekleyiniz.'); return; }
+
+      const customer = customers.find(c => c.id === customer_id);
+      const quote_number = document.getElementById('builder-quote-no').innerText;
+      const profitRate = Number(document.getElementById('builder-profit-rate').value) || 0;
+
+      const { data: qData, error: qErr } = await supabase.from('quotations').insert([{
+        quote_number,
+        customer_id,
+        customer_snapshot: customer,
+        status: 'onaylandi',
+        issue_date: new Date().toISOString().split('T')[0],
+        validity_date: new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0],
+        global_profit_rate: profitRate,
+        discount_value: currentCalculations.discount,
+        vat_rate: Number(document.getElementById('builder-vat').value),
+        payment_method: paymentMethod,
+        subtotal: currentCalculations.rawSubtotal,
+        discount_total: currentCalculations.discount,
+        vat_total: currentCalculations.vatAmount,
+        cash_total: currentCalculations.cashTotal,
+        interest_total: currentCalculations.interestAmount,
+        grand_total: currentCalculations.grandTotal,
+        monthly_installment: currentCalculations.monthly
+      }]).select().single();
+
+      if (qErr) { alert('Hata: ' + qErr.message); return; }
+
+      const itemsToInsert = builderItems.map(it => {
+        const unitWithProfit = it.base_price * (1 + profitRate / 100);
+        return {
+          quotation_id: qData.id,
+          material_id: it.material_id,
+          material_name: it.material_name,
+          quantity: it.quantity,
+          base_price: it.base_price,
+          profit_rate: profitRate,
+          unit_price: unitWithProfit,
+          line_total: unitWithProfit * it.quantity
+        };
+      });
+
+      await supabase.from('quotation_items').insert(itemsToInsert);
+      alert('Teklif başarıyla kaydedildi!');
+      await fetchAllData();
+      switchTab('quotes');
+    };
+
+    function renderQuotes() {
+      const list = document.getElementById('quotesList');
+      if (quotes.length === 0) {
+        list.innerHTML = '<div class="text-center py-6 text-xs text-slate-400">Teklif kaydı yok.</div>';
+        return;
+      }
+
+      list.innerHTML = quotes.map(q => `
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="font-black text-xs text-slate-900">${q.quote_number}</span>
+              <p class="text-[11px] text-slate-500 font-medium">${q.customer_snapshot?.company_name}</p>
+            </div>
+            <span class="font-black text-xs text-amber-600 font-mono">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
+          </div>
+          <div class="flex justify-between items-center pt-2 border-t text-[11px]">
+            <span class="text-slate-400">${new Date(q.issue_date).toLocaleDateString('tr-TR')}</span>
+            <div class="flex gap-2">
+              <button onclick="openPrintModal('${q.id}')" class="text-blue-600 font-bold">PDF / Yazdır</button>
+              <button onclick="deleteQuote('${q.id}')" class="text-rose-500 font-bold">Sil</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.deleteQuote = async function(id) {
+      if (!confirm('Teklif silinsin mi?')) return;
+      await supabase.from('quotations').delete().eq('id', id);
+      await fetchAllData();
+    };
+
+    window.openPrintModal = async function(qid) {
+      const quote = quotes.find(q => q.id === qid);
+      if (!quote) return;
+
+      const { data: items } = await supabase.from('quotation_items').select('*').eq('quotation_id', qid);
+
+      const area = document.getElementById('printArea');
+      area.innerHTML = `
+        <div class="flex justify-between items-start border-b-2 border-slate-900 pb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-slate-900 text-amber-400 border-2 border-amber-400 rounded-xl flex items-center justify-center font-black text-xl shadow">BK</div>
+            <div>
+              <h1 class="text-xl font-black text-slate-900 tracking-tight">BK YAPI İNŞAAT SANAYİ</h1>
+              <p class="text-[10px] text-slate-500">Mimarlık • Mühendislik • Taahhüt Hizmetleri</p>
+              <p class="text-[10px] text-slate-500">Tel: +90 (555) 000 00 00 | E-posta: info@bkyapi.com</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="bg-slate-900 text-amber-400 font-black text-[10px] uppercase px-2 py-0.5 rounded tracking-wider">RESMİ TEKLİF</span>
+            <p class="font-bold text-slate-900 text-xs mt-1">${quote.quote_number}</p>
+            <p class="text-[10px] text-slate-500">Tarih: ${new Date(quote.issue_date).toLocaleDateString('tr-TR')}</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">MÜŞTERİ BİLGİLERİ</span>
+          <p class="font-bold text-slate-900 text-xs mt-0.5">${quote.customer_snapshot?.company_name}</p>
+          <p class="text-[10px] text-slate-600">Yetkili: ${quote.customer_snapshot?.authorized_person || '-'} • İletişim: ${quote.customer_snapshot?.phone}</p>
+          <p class="text-[10px] text-slate-500">${quote.customer_snapshot?.address || 'Adres belirtilmedi.'}</p>
+        </div>
+
+        <table class="w-full text-left text-[11px] border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-300 bg-slate-100 font-bold text-slate-700">
+              <th class="p-2">Kalem Tanımı</th>
+              <th class="p-2 text-center">Miktar</th>
+              <th class="p-2 text-right">Birim Fiyat</th>
+              <th class="p-2 text-right">Toplam (KDV Hariç)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(items || []).map(i => `
+              <tr class="border-b border-slate-200">
+                <td class="p-2 font-medium">${i.material_name}</td>
+                <td class="p-2 text-center font-bold">${i.quantity}</td>
+                <td class="p-2 text-right">${Number(i.unit_price).toLocaleString('tr-TR')} ₺</td>
+                <td class="p-2 text-right font-black text-slate-900">${Number(i.line_total).toLocaleString('tr-TR')} ₺</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div class="flex justify-end pt-2">
+          <div class="w-56 space-y-1 text-right text-[11px]">
+            <div class="flex justify-between text-slate-600"><span>Ara Toplam:</span><strong>${Number(quote.subtotal).toLocaleString('tr-TR')} ₺</strong></div>
+            ${quote.discount_total > 0 ? `<div class="flex justify-between text-rose-600"><span>İskonto:</span><strong>-${Number(quote.discount_total).toLocaleString('tr-TR')} ₺</strong></div>` : ''}
+            <div class="flex justify-between text-slate-600"><span>KDV (%${quote.vat_rate}):</span><strong>${Number(quote.vat_total).toLocaleString('tr-TR')} ₺</strong></div>
+            <div class="flex justify-between text-xs font-black text-slate-900 border-t-2 border-slate-900 pt-1.5 mt-1">
+              <span>GENEL TOPLAM:</span>
+              <span class="text-blue-900 text-sm font-mono">${Number(quote.grand_total).toLocaleString('tr-TR')} TL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 pt-10 border-t border-slate-200 text-center text-[10px]">
+          <div>
+            <p class="font-bold text-slate-800">BK YAPI Yetkilisi</p>
+            <div class="h-12"></div>
+            <p class="text-slate-400">Kaşe / İmza</p>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Müşteri Onayı</p>
+            <div class="h-12"></div>
+            <p class="text-slate-400">Kaşe / İmza</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('btnShareWhatsapp').onclick = () => {
+        const text = `Sayın ${quote.customer_snapshot?.company_name},\nBK YAPI olarak hazırladığımız ${quote.quote_number} nolu teklifimiz ekte bilgilerinize sunulmuştur.\nGenel Toplam: ${Number(quote.grand_total).toLocaleString('tr-TR')} TL`;
+        window.open(`https://wa.me/90${quote.customer_snapshot?.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(text)}`);
+      };
+
+      toggleModal('modal-print-view', true);
+    };
+
+    function renderDashboard() {
+      document.getElementById('dash-customer-count').innerText = customers.length;
+      document.getElementById('dash-material-count').innerText = materials.length;
+      const totalVolume = quotes.reduce((acc, q) => acc + Number(q.grand_total || 0), 0);
+      document.getElementById('dash-total-volume').innerText = totalVolume.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
+    }
+  </script>
+</body>
+</html>
