@@ -2,175 +2,200 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BK YAPI - Profesyonel ERP & CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>BK YAPI - Mobil ERP & CRM</title>
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: #f8fafc; color: #0f172a; padding-bottom: 95px; font-size: 13px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     
-    /* Header */
-    .header { background: #090d16; color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-    .logo-container { display: flex; align-items: center; gap: 10px; }
-    .logo-badge { width: 38px; height: 38px; background: linear-gradient(135deg, #f59e0b, #b45309); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: #090d16; border: 1px solid #fde68a; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
-    .logo-text h1 { font-size: 15px; font-weight: 900; letter-spacing: 0.5px; }
-    .logo-text p { font-size: 10px; color: #94a3b8; }
-    .status-tag { font-size: 10px; background: #1e293b; color: #10b981; padding: 3px 8px; border-radius: 12px; font-weight: 800; border: 1px solid #334155; }
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --orange: #ff6b00;
+      --orange-glow: rgba(255, 107, 0, 0.25);
+      --amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 96px; font-size: 13px; }
     
-    /* Container & Layout */
-    .container { max-width: 500px; margin: 0 auto; padding: 12px; }
-    .card { background: white; border-radius: 14px; padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+    /* Top Header */
+    .header { background: rgba(9, 13, 22, 0.95); backdrop-filter: blur(10px); padding: 14px 18px; position: sticky; top: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); }
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    .logo-badge { width: 40px; height: 40px; background: linear-gradient(135deg, #ff6b00, #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #000; box-shadow: 0 4px 15px var(--orange-glow); border: 1px solid #fed7aa; }
+    .logo-text h1 { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; color: #fff; }
+    .logo-text p { font-size: 10px; color: var(--orange); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .header-badge { font-size: 10px; background: #1c2438; color: #38bdf8; padding: 4px 10px; border-radius: 20px; font-weight: 800; border: 1px solid #2d3748; }
+
+    /* Layout & Cards */
+    .container { max-width: 500px; margin: 0 auto; padding: 14px; }
+    .card { background: var(--card-bg); border-radius: 18px; padding: 16px; border: 1px solid var(--card-border); margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .card-glow { border: 1px solid rgba(255, 107, 0, 0.3); box-shadow: 0 4px 25px rgba(255, 107, 0, 0.12); }
     
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 14px; font-size: 12px; font-weight: 700; border-radius: 9px; border: none; cursor: pointer; transition: 0.1s; }
-    .btn:active { transform: scale(0.97); }
-    .btn-primary { background: #2563eb; color: white; }
-    .btn-success { background: #059669; color: white; }
+    /* Interactive Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 11px 16px; font-size: 13px; font-weight: 800; border-radius: 12px; border: none; cursor: pointer; transition: 0.15s ease; gap: 6px; }
+    .btn:active { transform: scale(0.96); }
+    .btn-orange { background: linear-gradient(135deg, #ff6b00, #ea580c); color: #fff; box-shadow: 0 4px 15px var(--orange-glow); }
+    .btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
     .btn-danger { background: #e11d48; color: white; }
-    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
-    .btn-amber { background: #d97706; color: white; }
+    .btn-success { background: #059669; color: white; }
     .btn-block { width: 100%; }
 
-    /* Forms */
-    .form-group { margin-bottom: 10px; }
-    .form-label { display: block; font-size: 10px; font-weight: 800; color: #64748b; margin-bottom: 4px; text-transform: uppercase; }
-    .form-control { width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13px; background: #f8fafc; color: #0f172a; outline: none; }
-    .form-control:focus { border-color: #2563eb; background: white; }
+    /* Inputs */
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: 10px; font-weight: 800; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--card-border); border-radius: 12px; font-size: 13px; background: #0d121f; color: #fff; outline: none; transition: 0.2s; }
+    .form-control:focus { border-color: var(--orange); box-shadow: 0 0 10px var(--orange-glow); }
 
-    /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 8px 2px; z-index: 60; max-width: 500px; margin: 0 auto; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
-    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; background: none; border: none; font-size: 10px; font-weight: 700; color: #64748b; padding: 3px 0; cursor: pointer; }
-    .nav-btn.active { color: #2563eb; }
+    /* Bottom Dock Bar */
+    .bottom-nav { position: fixed; bottom: 12px; left: 14px; right: 14px; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border: 1px solid #2d3748; border-radius: 24px; display: flex; justify-content: space-around; padding: 10px 4px; z-index: 60; max-width: 472px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; background: none; border: none; font-size: 10px; font-weight: 800; color: #64748b; padding: 4px 0; cursor: pointer; transition: 0.2s; gap: 3px; }
+    .nav-btn.active { color: var(--orange); }
+    .nav-btn.active svg { stroke: var(--orange); filter: drop-shadow(0 0 6px var(--orange)); }
 
-    /* Pills Bar */
-    .pill-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; }
-    .pill-btn { white-space: nowrap; padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1px solid #cbd5e1; background: white; color: #475569; }
-    .pill-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
+    /* Horizontal Pills */
+    .pill-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
+    .pill-btn { white-space: nowrap; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; border: 1px solid var(--card-border); background: #131b2e; color: #94a3b8; cursor: pointer; }
+    .pill-btn.active { background: linear-gradient(135deg, #ff6b00, #ea580c); color: white; border-color: #ff6b00; box-shadow: 0 2px 10px var(--orange-glow); }
+
+    /* Toggle Switch */
+    .toggle-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #0d121f; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 12px; }
+    .toggle-switch { position: relative; width: 44px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: #334155; transition: .2s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--orange); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
     /* Modals */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 12px; backdrop-filter: blur(2px); }
-    .modal-box { background: white; border-radius: 16px; width: 100%; max-width: 440px; max-height: 88vh; overflow-y: auto; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 10px; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 14px; backdrop-filter: blur(5px); }
+    .modal-box { background: #111827; border: 1px solid #2d3748; border-radius: 22px; width: 100%; max-width: 450px; max-height: 88vh; overflow-y: auto; padding: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f293d; padding-bottom: 10px; margin-bottom: 14px; }
 
-    .status-badge { display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
-    .st-taslak { background: #f1f5f9; color: #475569; }
-    .st-gonderildi { background: #eff6ff; color: #1d4ed8; }
-    .st-onaylandi { background: #ecfdf5; color: #047857; }
-    .st-reddedildi { background: #fef2f2; color: #b91c1c; }
+    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+    .st-taslak { background: #1e293b; color: #94a3b8; }
+    .st-gonderildi { background: rgba(37,99,235,0.2); color: #60a5fa; border: 1px solid rgba(37,99,235,0.4); }
+    .st-onaylandi { background: rgba(5,150,105,0.2); color: #34d399; border: 1px solid rgba(5,150,105,0.4); }
+    .st-reddedildi { background: rgba(225,29,72,0.2); color: #fb7185; border: 1px solid rgba(225,29,72,0.4); }
 
     .hidden { display: none !important; }
 
+    /* Print & PDF */
     @media print {
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white !important; padding: 0 !important; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; padding: 0 !important; }
       .no-print { display: none !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- App Header -->
   <header class="header">
     <div class="logo-container">
       <div class="logo-badge">BK</div>
       <div class="logo-text">
         <h1>BK YAPI</h1>
-        <p>Kurumsal ERP & CRM Sistemi</p>
+        <p>Enterprise ERP Portal</p>
       </div>
     </div>
-    <div class="status-tag">v3.0 Aktif</div>
+    <div class="header-badge">v4.0 Pro</div>
   </header>
 
   <main class="container">
 
-    <!-- 1. PANEL (DASHBOARD) -->
+    <!-- 1. DASHBOARD -->
     <section id="view-dashboard">
-      <div style="background: linear-gradient(135deg, #090d16, #1e293b); color: white; padding: 18px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-        <span style="font-size: 10px; color: #fbbf24; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Toplam Teklif Portföyü</span>
-        <h2 id="dash-volume" style="font-size: 26px; font-weight: 900; margin-top: 4px; font-family: monospace;">0,00 ₺</h2>
-        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #334155; display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8;">
-          <span>Onaylanan Ciro</span>
-          <span id="dash-approved-vol" style="color: #34d399; font-weight: bold;">0,00 ₺</span>
+      <div class="card card-glow" style="background: linear-gradient(135deg, #111827 0%, #1a1512 100%);">
+        <span style="font-size: 11px; color: var(--orange); font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;">Toplam Teklif Portföyü</span>
+        <h2 id="dash-volume" style="font-size: 28px; font-weight: 900; margin-top: 4px; font-family: monospace; color: #fff;">0,00 ₺</h2>
+        <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+          <span>Onaylanan Hacim:</span>
+          <span id="dash-approved-vol" style="color: #34d399; font-weight: 800;">0,00 ₺</span>
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-        <div class="card" style="margin-bottom:0; text-align: center; padding: 10px;">
-          <span style="font-size: 10px; color: #64748b; font-weight: 800;">Müşteriler</span>
-          <p id="dash-cust-count" style="font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 2px;">0</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+        <div class="card" style="margin-bottom:0; text-align: center; padding: 12px 8px;">
+          <span style="font-size: 10px; color: var(--text-muted); font-weight: 800;">Müşteri</span>
+          <p id="dash-cust-count" style="font-size: 22px; font-weight: 900; color: #fff; margin-top: 4px;">0</p>
         </div>
-        <div class="card" style="margin-bottom:0; text-align: center; padding: 10px;">
-          <span style="font-size: 10px; color: #64748b; font-weight: 800;">Malzemeler</span>
-          <p id="dash-mat-count" style="font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 2px;">0</p>
+        <div class="card" style="margin-bottom:0; text-align: center; padding: 12px 8px;">
+          <span style="font-size: 10px; color: var(--text-muted); font-weight: 800;">Malzeme</span>
+          <p id="dash-mat-count" style="font-size: 22px; font-weight: 900; color: var(--orange); margin-top: 4px;">0</p>
         </div>
-        <div class="card" style="margin-bottom:0; text-align: center; padding: 10px;">
-          <span style="font-size: 10px; color: #64748b; font-weight: 800;">Teklifler</span>
-          <p id="dash-quote-count" style="font-size: 20px; font-weight: 900; color: #2563eb; margin-top: 2px;">0</p>
+        <div class="card" style="margin-bottom:0; text-align: center; padding: 12px 8px;">
+          <span style="font-size: 10px; color: var(--text-muted); font-weight: 800;">Teklifler</span>
+          <p id="dash-quote-count" style="font-size: 22px; font-weight: 900; color: #38bdf8; margin-top: 4px;">0</p>
         </div>
       </div>
 
-      <button id="btn-dash-new-quote" class="btn btn-primary btn-block" style="padding: 12px; font-size: 14px; margin-bottom: 14px;">
-        + Hızlı Teklif Oluştur
+      <button id="btn-dash-new-quote" class="btn btn-orange btn-block" style="padding: 14px; font-size: 14px; margin-bottom: 16px;">
+        ⚡ Hızlı Teklif Oluştur
       </button>
 
-      <!-- Son Teklifler -->
       <div class="card">
-        <h3 style="font-size: 12px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">Son Düzenlenen Teklifler</h3>
+        <h3 style="font-size: 11px; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Son Teklifler</h3>
         <div id="dash-recent-quotes"></div>
       </div>
     </section>
 
-    <!-- 2. MÜŞTERİ YÖNETİMİ -->
+    <!-- 2. MÜŞTERİLER -->
     <section id="view-customers" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2 style="font-size: 16px; font-weight: 800;">Müşteri Listesi</h2>
-        <button id="btn-open-cust-modal" class="btn btn-primary">+ Yeni Müşteri</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="font-size: 17px; font-weight: 900; color: #fff;">Müşteri Rehberi</h2>
+        <button id="btn-open-cust-modal" class="btn btn-orange" style="padding: 8px 14px;">+ Yeni Müşteri</button>
       </div>
-      <input type="text" id="search-cust" placeholder="Müşteri veya telefon ara..." class="form-control" style="margin-bottom: 10px;">
+      <input type="text" id="search-cust" placeholder="🔍 Müşteri adı veya telefon ara..." class="form-control" style="margin-bottom: 12px;">
       <div id="customer-list-container"></div>
     </section>
 
-    <!-- 3. MALZEME & GRUP YÖNETİMİ -->
+    <!-- 3. ENVANTER & GRUPLAR -->
     <section id="view-inventory" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <div>
-          <h2 style="font-size: 16px; font-weight: 800;">Malzeme Envanteri</h2>
-          <p style="font-size: 10px; color: #64748b;">Gruplara göre fiyatlandırma</p>
+          <h2 style="font-size: 17px; font-weight: 900; color: #fff;">Malzeme Envanteri</h2>
+          <p style="font-size: 10px; color: var(--text-muted);">Grup bazlı fiyat listesi</p>
         </div>
         <div style="display: flex; gap: 6px;">
-          <button id="btn-open-group-modal" class="btn btn-secondary">Gruplar</button>
-          <button id="btn-open-mat-modal" class="btn btn-primary">+ Malzeme</button>
+          <button id="btn-open-group-modal" class="btn btn-secondary" style="padding: 8px 12px;">Gruplar</button>
+          <button id="btn-open-mat-modal" class="btn btn-orange" style="padding: 8px 12px;">+ Malzeme</button>
         </div>
       </div>
 
-      <input type="text" id="search-mat" placeholder="Malzeme adı ara..." class="form-control" style="margin-bottom: 10px;">
+      <input type="text" id="search-mat" placeholder="🔍 Malzeme adı ara..." class="form-control" style="margin-bottom: 12px;">
       <div id="inventory-group-pills" class="pill-bar"></div>
       <div id="inventory-list-container"></div>
     </section>
 
     <!-- 4. TEKLİFLER LİSTESİ -->
     <section id="view-quotes" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2 style="font-size: 16px; font-weight: 800;">Teklif Portföyü</h2>
-        <button id="btn-open-quote-builder" class="btn btn-primary">+ Teklif Hazırla</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="font-size: 17px; font-weight: 900; color: #fff;">Teklif Portföyü</h2>
+        <button id="btn-open-quote-builder" class="btn btn-orange" style="padding: 8px 14px;">+ Teklif Ver</button>
       </div>
-      <input type="text" id="search-quotes" placeholder="Teklif no veya müşteri adı ara..." class="form-control" style="margin-bottom: 10px;">
+      <input type="text" id="search-quotes" placeholder="🔍 Teklif no veya firma ara..." class="form-control" style="margin-bottom: 12px;">
       <div id="quotes-list-container"></div>
     </section>
 
-    <!-- 5. TEKLİF HAZIRLAMA MOTORU -->
+    <!-- 5. TEKLİF HAZIRLAMA (BUILDER) -->
     <section id="view-builder" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">
-        <button id="btn-builder-cancel" class="btn btn-secondary" style="padding: 5px 10px; font-size: 11px;">← Geri</button>
-        <span id="builder-quote-code" style="font-weight: 900; font-size: 13px; color: #0f172a;">BK-2026-0001</span>
-        <button id="btn-builder-save" class="btn btn-success" style="padding: 6px 14px; font-size: 12px;">Kaydet</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">
+        <button id="btn-builder-cancel" class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;">← İptal</button>
+        <span id="builder-quote-code" style="font-weight: 900; font-size: 14px; color: var(--orange); font-family: monospace;">BK-2026-0001</span>
+        <button id="btn-builder-save" class="btn btn-orange" style="padding: 7px 16px; font-size: 12px;">Kaydet</button>
       </div>
 
       <!-- Müşteri ve Durum -->
-      <div class="card" style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+      <div class="card" style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
         <div>
           <label class="form-label">Müşteri Seçin</label>
-          <select id="builder-customer-select" class="form-control"></select>
+          <select id="builder-customer-select" class="form-control font-bold"></select>
         </div>
         <div>
           <label class="form-label">Durum</label>
@@ -183,33 +208,45 @@
         </div>
       </div>
 
+      <!-- FİYAT GİZLE / GÖSTER TOGGLE (İSTEDİĞİNİZ ÖZELLİK) -->
+      <div class="toggle-wrapper">
+        <div>
+          <strong style="color: #fff; font-size: 12px; display: block;">Müşteri Çıktısında Fiyatları Gizle</strong>
+          <span style="font-size: 10px; color: var(--text-muted);">Açılırsa PDF'te birim fiyatlar ve satır tutarları gizlenir (Teknik keşif listesi olur)</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-hide-prices">
+          <span class="slider"></span>
+        </label>
+      </div>
+
       <!-- Malzeme Kalemleri -->
       <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <label class="form-label" style="margin-bottom:0;">Teklif Kalemleri</label>
-          <button id="btn-open-select-mat" class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">+ Envanterden Ekle</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <label class="form-label" style="margin-bottom:0;">Teklif Malzemeleri</label>
+          <button id="btn-open-select-mat" class="btn btn-secondary" style="font-size: 11px; padding: 5px 10px; color: var(--orange); border-color: rgba(255,107,0,0.3);">+ Envanterden Seç</button>
         </div>
         <div id="builder-items-box"></div>
       </div>
 
-      <!-- Kâr Artışı -->
-      <div class="card" style="background: #fffbeb; border-color: #fde68a; display: flex; justify-content: space-between; align-items: center;">
+      <!-- Kâr / Fiyat Artışı -->
+      <div class="card" style="background: rgba(255, 107, 0, 0.05); border-color: rgba(255, 107, 0, 0.3); display: flex; justify-content: space-between; align-items: center;">
         <div>
-          <span style="font-size: 12px; font-weight: 800; color: #78350f; display: block;">Kâr / Fiyat Artışı (%)</span>
-          <span style="font-size: 10px; color: #b45309;">PDF ve müşteriye yansıtılmaz</span>
+          <span style="font-size: 12px; font-weight: 900; color: var(--orange); display: block;">Kâr / Fiyat Artış Oranı (%)</span>
+          <span style="font-size: 10px; color: var(--text-muted);">PDF çıktısında asla görünmez</span>
         </div>
-        <input type="number" id="builder-profit" value="0" min="0" class="form-control" style="width: 70px; text-align: center; font-weight: bold; background: white;">
+        <input type="number" id="builder-profit" value="0" min="0" class="form-control" style="width: 70px; text-align: center; font-weight: 900; color: var(--orange); font-size: 14px;">
       </div>
 
       <!-- İskonto & KDV -->
-      <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div>
-          <label class="form-label">İskonto Tutarı (TL)</label>
-          <input type="number" id="builder-discount" value="0" min="0" class="form-control">
+          <label class="form-label">İskonto (TL)</label>
+          <input type="number" id="builder-discount" value="0" min="0" class="form-control font-bold">
         </div>
         <div>
           <label class="form-label">KDV Oranı (%)</label>
-          <select id="builder-vat" class="form-control">
+          <select id="builder-vat" class="form-control font-bold">
             <option value="0">%0 Muaf</option>
             <option value="1">%1</option>
             <option value="10">%10</option>
@@ -218,90 +255,77 @@
         </div>
       </div>
 
-      <!-- Ödeme Yöntemi: Peşin / Kredi Kartı / Senet -->
+      <!-- Ödeme Koşulları -->
       <div class="card">
-        <label class="form-label">Ödeme Şekli</label>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px;">
-          <button id="pay-opt-cash" class="btn btn-primary" style="font-size: 11px;">Peşin</button>
+        <label class="form-label">Ödeme Yöntemi</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px;">
+          <button id="pay-opt-cash" class="btn btn-orange" style="font-size: 11px;">Peşin</button>
           <button id="pay-opt-card" class="btn btn-secondary" style="font-size: 11px;">Kredi Kartı</button>
           <button id="pay-opt-senet" class="btn btn-secondary" style="font-size: 11px;">Senet</button>
         </div>
 
-        <!-- Kredi Kartı 1-12 Ay Ay Taksit Seçimi -->
-        <div id="box-card-options" class="hidden" style="padding-top: 8px; border-top: 1px solid #e2e8f0;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-size: 11px; font-weight: bold;">Taksit Sayısı (Ay):</span>
-            <select id="builder-cc-installment" class="form-control" style="width: 140px; font-weight: bold;"></select>
+        <!-- Kart Taksit -->
+        <div id="box-card-options" class="hidden" style="padding-top: 10px; border-top: 1px solid var(--card-border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span style="font-size: 11px; font-weight: 800; color: #fff;">Taksit Sayısı:</span>
+            <select id="builder-cc-installment" class="form-control" style="width: 145px; font-weight: bold;"></select>
           </div>
-          <!-- Ay Ay Taksit Çizelgesi -->
-          <div id="cc-schedule-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; font-size: 11px;"></div>
+          <div id="cc-schedule-box" style="background: #0d121f; border-radius: 10px; padding: 8px; font-size: 11px; border: 1px solid var(--card-border);"></div>
         </div>
 
-        <!-- Senetli Satış 1-12 Ay Vade ve Peşinat -->
-        <div id="box-senet-options" class="hidden" style="padding-top: 8px; border-top: 1px solid #e2e8f0;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+        <!-- Senet Taksit -->
+        <div id="box-senet-options" class="hidden" style="padding-top: 10px; border-top: 1px solid var(--card-border);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
             <div>
               <label class="form-label">Peşinat Tutarı (TL)</label>
-              <input type="number" id="builder-senet-down" value="0" class="form-control">
+              <input type="number" id="builder-senet-down" value="0" class="form-control font-bold">
             </div>
             <div>
               <label class="form-label">Vade (Ay)</label>
               <select id="builder-senet-months" class="form-control font-bold">
-                <option value="1">1 Ay</option>
-                <option value="2">2 Ay</option>
-                <option value="3">3 Ay</option>
-                <option value="4">4 Ay</option>
-                <option value="5">5 Ay</option>
-                <option value="6" selected>6 Ay</option>
-                <option value="7">7 Ay</option>
-                <option value="8">8 Ay</option>
-                <option value="9">9 Ay</option>
-                <option value="10">10 Ay</option>
-                <option value="11">11 Ay</option>
-                <option value="12">12 Ay</option>
+                <option value="1">1 Ay</option><option value="2">2 Ay</option><option value="3">3 Ay</option>
+                <option value="6" selected>6 Ay</option><option value="9">9 Ay</option><option value="12">12 Ay</option>
               </select>
             </div>
           </div>
-          <!-- Ay Ay Senet Ödeme Takvimi -->
-          <div id="senet-schedule-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px; font-size: 11px;"></div>
+          <div id="senet-schedule-box" style="background: #0d121f; border-radius: 10px; padding: 8px; font-size: 11px; border: 1px solid var(--card-border);"></div>
         </div>
       </div>
 
-      <!-- Hesaplama Finansal Kartı -->
-      <div style="background: #090d16; color: white; padding: 14px; border-radius: 16px; font-size: 12px;">
-        <div style="display: flex; justify-content: space-between; color: #94a3b8; margin-bottom: 3px;">
+      <!-- Finansal Toplam Kartı -->
+      <div class="card card-glow" style="background: #0d121f;">
+        <div style="display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;">
           <span>Ara Toplam:</span><span id="txt-calc-subtotal">0,00 ₺</span>
         </div>
-        <div style="display: flex; justify-content: space-between; color: #94a3b8; margin-bottom: 3px;">
+        <div style="display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;">
           <span>KDV Tutarı:</span><span id="txt-calc-vat">0,00 ₺</span>
         </div>
-        <div style="display: flex; justify-content: space-between; color: #94a3b8; margin-bottom: 3px;">
-          <span>Vade / Komisyon:</span><span id="txt-calc-interest">0,00 ₺</span>
+        <div style="display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;">
+          <span>Vade / Farkı:</span><span id="txt-calc-interest">0,00 ₺</span>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; border-top: 1px solid #334155; padding-top: 8px; margin-top: 5px;">
-          <span>Genel Toplam:</span>
-          <span id="txt-calc-grand" style="color: #fbbf24; font-family: monospace;">0,00 ₺</span>
+        <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 8px;">
+          <span style="color: #fff;">Genel Toplam:</span>
+          <span id="txt-calc-grand" style="color: var(--orange); font-family: monospace;">0,00 ₺</span>
         </div>
-        <div id="box-calc-monthly" class="hidden" style="text-align: right; color: #38bdf8; font-weight: bold; font-size: 11px; margin-top: 3px;">
+        <div id="box-calc-monthly" class="hidden" style="text-align: right; color: #38bdf8; font-weight: 800; font-size: 11px; margin-top: 4px;">
           Aylık Taksit: <span id="txt-calc-monthly">0,00 ₺</span>
         </div>
       </div>
     </section>
 
-    <!-- 6. SİSTEM AYARLARI & YEDEKLEME -->
+    <!-- 6. AYARLAR -->
     <section id="view-settings" class="hidden">
-      <h2 style="font-size: 16px; font-weight: 800; margin-bottom: 10px;">ERP Ayarları</h2>
-      
+      <h2 style="font-size: 17px; font-weight: 900; color: #fff; margin-bottom: 12px;">Sistem Ayarları</h2>
       <div class="card">
         <label class="form-label">Senet Aylık Vade Farkı Oranı (%)</label>
-        <input type="number" id="setting-senet-rate" value="2.5" step="0.1" class="form-control" style="margin-bottom: 8px;">
-        <button id="btn-save-settings" class="btn btn-primary btn-block">Oranları Kaydet</button>
+        <input type="number" id="setting-senet-rate" value="2.5" step="0.1" class="form-control" style="margin-bottom: 10px;">
+        <button id="btn-save-settings" class="btn btn-orange btn-block">Ayarları Güncelle</button>
       </div>
 
       <div class="card">
         <label class="form-label">Veri Yedekleme ve Taşıma</label>
-        <p style="font-size: 11px; color: #64748b; margin-bottom: 8px;">Tüm müşteri, malzeme ve tekliflerinizi yedekleyin veya başka telefona aktarın.</p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Cihaz değiştiğinde verilerinizi kaybetmemek için tek tıkla yedeğinizi indirin.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
           <button id="btn-export-data" class="btn btn-secondary">Yedek İndir (JSON)</button>
           <button id="btn-import-trigger" class="btn btn-secondary">Yedek Yükle</button>
         </div>
@@ -312,17 +336,16 @@
   </main>
 
   <!-- MODALLER -->
-
-  <!-- Modal: Grup Yönetimi (Ad Değiştirme, Ekleme, Silme) -->
+  <!-- Modal: Grup Yönetimi -->
   <div id="modal-groups" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-weight: 800; font-size: 14px;">Malzeme Gruplarını Düzenle</h3>
-        <button id="btn-close-group-modal" style="background:none; border:none; font-size: 18px; cursor:pointer;">✕</button>
+        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Grupları Düzenle</h3>
+        <button id="btn-close-group-modal" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
       </div>
-      <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+      <div style="display: flex; gap: 8px; margin-bottom: 14px;">
         <input type="text" id="input-new-group-name" placeholder="Yeni grup adı..." class="form-control">
-        <button id="btn-save-new-group" class="btn btn-primary">Ekle</button>
+        <button id="btn-save-new-group" class="btn btn-orange">Ekle</button>
       </div>
       <div id="modal-group-list"></div>
     </div>
@@ -332,22 +355,13 @@
   <div id="modal-material" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-weight: 800; font-size: 14px;">Yeni Malzeme Ekle</h3>
-        <button id="btn-close-mat-modal" style="background:none; border:none; font-size: 18px; cursor:pointer;">✕</button>
+        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Yeni Malzeme</h3>
+        <button id="btn-close-mat-modal" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Malzeme Grubu</label>
-        <select id="input-mat-group-select" class="form-control"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Malzeme Tanımı</label>
-        <input type="text" id="input-mat-name" placeholder="Örn: 10'luk Nervürlü İnşaat Demiri" class="form-control">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Satış Fiyatı (TL)</label>
-        <input type="number" id="input-mat-price" placeholder="0.00" class="form-control font-bold">
-      </div>
-      <button id="btn-save-new-mat" class="btn btn-primary btn-block">Kaydet</button>
+      <div class="form-group"><label class="form-label">Grup</label><select id="input-mat-group-select" class="form-control"></select></div>
+      <div class="form-group"><label class="form-label">Malzeme Tanımı</label><input type="text" id="input-mat-name" class="form-control"></div>
+      <div class="form-group"><label class="form-label">Satış Fiyatı (TL)</label><input type="number" id="input-mat-price" class="form-control font-bold"></div>
+      <button id="btn-save-new-mat" class="btn btn-orange btn-block">Kaydet</button>
     </div>
   </div>
 
@@ -355,63 +369,73 @@
   <div id="modal-customer" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-weight: 800; font-size: 14px;">Yeni Müşteri Oluştur</h3>
-        <button id="btn-close-cust-modal" style="background:none; border:none; font-size: 18px; cursor:pointer;">✕</button>
+        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Yeni Müşteri</h3>
+        <button id="btn-close-cust-modal" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
       </div>
       <div class="form-group"><input type="text" id="input-cust-name" placeholder="Firma Adı *" class="form-control"></div>
       <div class="form-group"><input type="text" id="input-cust-person" placeholder="Yetkili Kişi" class="form-control"></div>
       <div class="form-group"><input type="text" id="input-cust-phone" placeholder="Telefon (WhatsApp) *" class="form-control"></div>
-      <div class="form-group"><input type="text" id="input-cust-address" placeholder="Şantiye / Teslimat Adresi" class="form-control"></div>
-      <button id="btn-save-new-cust" class="btn btn-primary btn-block">Kaydet</button>
+      <div class="form-group"><input type="text" id="input-cust-address" placeholder="Şantiye / Adres" class="form-control"></div>
+      <button id="btn-save-new-cust" class="btn btn-orange btn-block">Kaydet</button>
     </div>
   </div>
 
-  <!-- Modal: Envanterden Seçim -->
+  <!-- Modal: Envanter Seçim -->
   <div id="modal-select-item" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-weight: 800; font-size: 14px;">Envanterden Kalem Seç</h3>
-        <button id="btn-close-select-mat" style="background:none; border:none; font-size: 18px; cursor:pointer;">✕</button>
+        <h3 style="font-weight: 900; font-size: 14px; color: #fff;">Envanterden Kalem Seç</h3>
+        <button id="btn-close-select-mat" style="background:none; border:none; font-size: 18px; color:#fff; cursor:pointer;">✕</button>
       </div>
       <div id="select-mat-pills" class="pill-bar"></div>
       <div id="select-mat-list" style="max-height: 50vh; overflow-y: auto;"></div>
     </div>
   </div>
 
-  <!-- Modal: PDF & Resmi Belge Çıktısı -->
+  <!-- Modal: PDF & Yazdırma Çıktısı -->
   <div id="modal-pdf" class="modal-overlay hidden">
     <div class="modal-box" style="max-width: 620px;">
       <div class="modal-header no-print">
-        <span style="font-weight: 800; font-size: 12px; color: #090d16;">Resmi Teklif Belgesi</span>
+        <span style="font-weight: 900; font-size: 13px; color: #fff;">Resmi Teklif Belgesi</span>
         <div style="display: flex; gap: 6px;">
-          <button id="btn-pdf-whatsapp" class="btn btn-success" style="font-size: 11px; padding: 4px 10px;">WhatsApp</button>
-          <button onclick="window.print()" class="btn btn-primary" style="font-size: 11px; padding: 4px 10px;">Yazdır</button>
-          <button id="btn-close-pdf" class="btn btn-secondary" style="font-size: 11px; padding: 4px 10px;">✕</button>
+          <button id="btn-pdf-whatsapp" class="btn btn-success" style="font-size: 11px; padding: 6px 12px;">WhatsApp</button>
+          <button onclick="window.print()" class="btn btn-orange" style="font-size: 11px; padding: 6px 12px;">Yazdır</button>
+          <button id="btn-close-pdf" class="btn btn-secondary" style="font-size: 11px; padding: 6px 10px;">✕</button>
         </div>
       </div>
-      <div id="printArea" style="padding: 10px; font-size: 11px;"></div>
+      <div id="printArea" style="padding: 8px; font-size: 11px;"></div>
     </div>
   </div>
 
-  <!-- Sabit Alt Gezinti Menüsü -->
+  <!-- Floating Bottom App Navigation (Mobil Dock) -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-tab="dashboard">Panel</button>
-    <button class="nav-btn" data-tab="customers">Müşteriler</button>
-    <button class="nav-btn" data-tab="inventory">Envanter</button>
-    <button class="nav-btn" data-tab="quotes">Teklifler</button>
-    <button class="nav-btn" data-tab="settings">Ayarlar</button>
+    <button class="nav-btn active" data-tab="dashboard">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+      <span>Panel</span>
+    </button>
+    <button class="nav-btn" data-tab="customers">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+      <span>Müşteriler</span>
+    </button>
+    <button class="nav-btn" data-tab="inventory">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+      <span>Envanter</span>
+    </button>
+    <button class="nav-btn" data-tab="quotes">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+      <span>Teklifler</span>
+    </button>
+    <button class="nav-btn" data-tab="settings">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>Ayarlar</span>
+    </button>
   </nav>
 
-  <!-- JAVASCRIPT: PROFESYONEL VE TAM BAĞIMSIZ ÇALIŞAN ERP ÇEKİRDEĞİ -->
+  <!-- JAVASCRIPT ÇEKİRDEĞİ -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      // Varsayılan Kredi Kartı 1-12 Ay Oranları
-      const defaultCcRates = {
-        1: 0, 2: 2.5, 3: 4.5, 4: 6.0, 5: 7.5, 6: 9.0,
-        7: 11.0, 8: 12.5, 9: 14.0, 10: 15.5, 11: 17.0, 12: 18.5
-      };
+      const defaultCcRates = { 1: 0, 2: 2.5, 3: 4.5, 4: 6.0, 5: 7.5, 6: 9.0, 7: 11.0, 8: 12.5, 9: 14.0, 10: 15.5, 11: 17.0, 12: 18.5 };
 
-      // Kalıcı Hafıza
       let state = {
         groups: JSON.parse(localStorage.getItem('bk_groups') || '[]'),
         materials: JSON.parse(localStorage.getItem('bk_materials') || '[]'),
@@ -422,15 +446,15 @@
         activeInventoryGroup: 'all',
         builderItems: [],
         paymentMethod: 'cash',
+        hidePricesInQuote: false,
         calculated: {}
       };
 
-      // İlk Kurulum Varsayılan Grupları
       if (state.groups.length === 0) {
         state.groups = [
-          { id: '1', name: 'Demir & Çimento' },
-          { id: '2', name: 'Tesisat & Elektrik' },
-          { id: '3', name: 'İşçilik & Montaj' }
+          { id: '1', name: 'Kaba İnşaat & Demir' },
+          { id: '2', name: 'Elektrik & Aydınlatma' },
+          { id: '3', name: 'Boya & Yalıtım' }
         ];
         saveAll();
       }
@@ -444,7 +468,6 @@
         localStorage.setItem('bk_cc_rates', JSON.stringify(state.ccRates));
       }
 
-      // --- NAVİGASYON ---
       function switchTab(target) {
         document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
         const el = document.getElementById('view-' + target);
@@ -469,7 +492,7 @@
       document.getElementById('btn-open-quote-builder').onclick = () => switchTab('builder');
       document.getElementById('btn-builder-cancel').onclick = () => switchTab('quotes');
 
-      // --- DASHBOARD ---
+      // DASHBOARD
       function renderDashboard() {
         document.getElementById('dash-cust-count').textContent = state.customers.length;
         document.getElementById('dash-mat-count').textContent = state.materials.length;
@@ -481,28 +504,27 @@
         const approvedVol = state.quotes.filter(q => q.status === 'onaylandi').reduce((acc, q) => acc + (Number(q.grand_total) || 0), 0);
         document.getElementById('dash-approved-vol').textContent = approvedVol.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + ' ₺';
 
-        // Son Teklifler
         const rBox = document.getElementById('dash-recent-quotes');
         if (state.quotes.length === 0) {
-          rBox.innerHTML = '<div style="text-align:center; padding:10px; font-size:11px; color:#94a3b8;">Henüz teklif oluşturulmadı.</div>';
+          rBox.innerHTML = '<div style="text-align:center; padding:12px; font-size:11px; color:#64748b;">Henüz teklif kaydı yok.</div>';
           return;
         }
 
         rBox.innerHTML = state.quotes.slice(0, 3).map(q => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f1f5f9; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #1f293d; font-size:11px;">
             <div>
-              <strong style="display:block; color:#0f172a;">${q.quote_number}</strong>
-              <span style="color:#64748b;">${q.customer_snapshot?.company_name || '-'}</span>
+              <strong style="color:#fff; display:block;">${q.quote_number}</strong>
+              <span style="color:#94a3b8;">${q.customer_snapshot?.company_name || '-'}</span>
             </div>
             <div style="text-align:right;">
-              <span style="font-weight:bold; font-family:monospace; color:#2563eb;">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
+              <span style="font-weight:900; font-family:monospace; color:var(--orange);">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
               <div><span class="status-badge st-${q.status || 'taslak'}">${q.status || 'taslak'}</span></div>
             </div>
           </div>
         `).join('');
       }
 
-      // --- MÜŞTERİ YÖNETİMİ ---
+      // MÜŞTERİLER
       function renderCustomers(filterText = '') {
         const box = document.getElementById('customer-list-container');
         let list = state.customers;
@@ -513,23 +535,23 @@
         }
 
         if (list.length === 0) {
-          box.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:11px;">Müşteri bulunamadı.</div>';
+          box.innerHTML = '<div style="text-align:center; padding:24px; color:#64748b;">Müşteri bulunamadı.</div>';
           return;
         }
 
         box.innerHTML = list.map((c, i) => `
-          <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding:10px;">
+          <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:12px;">
             <div>
-              <strong style="font-size:13px; display:block;">${c.company_name}</strong>
-              <span style="font-size:11px; color:#64748b;">${c.authorized_person || '-'} • ${c.phone}</span>
-              ${c.address ? `<p style="font-size:10px; color:#94a3b8; margin-top:2px;">${c.address}</p>` : ''}
+              <strong style="font-size:13px; color:#fff; display:block;">${c.company_name}</strong>
+              <span style="font-size:11px; color:#94a3b8;">${c.authorized_person || '-'} • ${c.phone}</span>
+              ${c.address ? `<p style="font-size:10px; color:#64748b; margin-top:2px;">${c.address}</p>` : ''}
             </div>
-            <button class="btn btn-danger btn-del-cust" data-idx="${i}" style="padding:4px 8px; font-size:10px;">Sil</button>
+            <button class="btn btn-danger btn-del-cust" data-idx="${i}" style="padding:5px 10px; font-size:10px;">Sil</button>
           </div>
         `).join('');
 
-        box.querySelectorAll('.btn-del-cust').forEach(btn => {
-          btn.onclick = function() {
+        box.querySelectorAll('.btn-del-cust').forEach(b => {
+          b.onclick = function() {
             if (confirm('Müşteri silinsin mi?')) {
               state.customers.splice(this.dataset.idx, 1);
               saveAll();
@@ -562,9 +584,8 @@
         renderDashboard();
       };
 
-      // --- GRUP & MALZEME YÖNETİMİ ---
+      // ENVANTER & GRUP
       function renderInventory(filterText = '') {
-        // Grup Butonları (Pills)
         const pBox = document.getElementById('inventory-group-pills');
         pBox.innerHTML = `<button class="pill-btn ${state.activeInventoryGroup === 'all' ? 'active' : ''}" data-gid="all">Tümü (${state.materials.length})</button>` +
           state.groups.map(g => {
@@ -579,7 +600,6 @@
           };
         });
 
-        // Malzemeler
         let list = state.activeInventoryGroup === 'all' ? state.materials : state.materials.filter(m => m.group_id === state.activeInventoryGroup);
 
         if (filterText) {
@@ -588,21 +608,21 @@
 
         const mBox = document.getElementById('inventory-list-container');
         if (list.length === 0) {
-          mBox.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:11px;">Malzeme bulunamadı.</div>';
+          mBox.innerHTML = '<div style="text-align:center; padding:24px; color:#64748b;">Malzeme bulunamadı.</div>';
           return;
         }
 
         mBox.innerHTML = list.map(m => {
           const grp = state.groups.find(g => g.id === m.group_id);
           return `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding:10px;">
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:12px;">
               <div>
-                <span style="font-size:9px; font-weight:800; color:#d97706; text-transform:uppercase; display:block;">${grp ? grp.name : 'Genel'}</span>
-                <strong style="font-size:13px; color:#0f172a;">${m.name}</strong>
+                <span style="font-size:9px; font-weight:900; color:var(--orange); text-transform:uppercase; display:block;">${grp ? grp.name : 'Genel'}</span>
+                <strong style="font-size:13px; color:#fff;">${m.name}</strong>
               </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:900; font-size:14px; font-family:monospace;">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
-                <button class="btn btn-danger btn-del-mat" data-id="${m.id}" style="padding:4px 8px; font-size:10px;">Sil</button>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:900; font-size:14px; font-family:monospace; color:#fff;">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
+                <button class="btn btn-danger btn-del-mat" data-id="${m.id}" style="padding:5px 8px; font-size:10px;">Sil</button>
               </div>
             </div>
           `;
@@ -622,7 +642,6 @@
 
       document.getElementById('search-mat').oninput = (e) => renderInventory(e.target.value);
 
-      // Grup Yönetimi: Ekle, Ad Değiştir, Sil
       document.getElementById('btn-open-group-modal').onclick = () => {
         renderGroupModalList();
         document.getElementById('modal-groups').classList.remove('hidden');
@@ -632,11 +651,11 @@
       function renderGroupModalList() {
         const box = document.getElementById('modal-group-list');
         box.innerHTML = state.groups.map(g => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:6px; font-size:12px;">
-            <strong style="color:#0f172a;">${g.name}</strong>
-            <div style="display:flex; gap:4px;">
-              <button class="btn btn-secondary btn-rename-grp" data-id="${g.id}" style="padding:2px 8px; font-size:10px;">Ad Değiştir</button>
-              <button class="btn btn-danger btn-del-grp" data-id="${g.id}" style="padding:2px 8px; font-size:10px;">Sil</button>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#0d121f; border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;">
+            <strong style="color:#fff;">${g.name}</strong>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-secondary btn-rename-grp" data-id="${g.id}" style="padding:4px 10px; font-size:11px;">Ad Değiştir</button>
+              <button class="btn btn-danger btn-del-grp" data-id="${g.id}" style="padding:4px 8px; font-size:11px;">Sil</button>
             </div>
           </div>
         `).join('');
@@ -657,7 +676,7 @@
 
         box.querySelectorAll('.btn-del-grp').forEach(b => {
           b.onclick = function() {
-            if (confirm('Grup silinsin mi? Malzemeler silinmez.')) {
+            if (confirm('Grup silinsin mi?')) {
               state.groups = state.groups.filter(g => g.id !== this.dataset.id);
               saveAll();
               renderGroupModalList();
@@ -677,7 +696,6 @@
         renderInventory();
       };
 
-      // Malzeme Ekle
       document.getElementById('btn-open-mat-modal').onclick = () => {
         const sel = document.getElementById('input-mat-group-select');
         sel.innerHTML = state.groups.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
@@ -702,10 +720,13 @@
         renderDashboard();
       };
 
-      // --- TEKLİF MOTORU & TAKSİT/SENET PLANLAYICI ---
+      // TEKLİF BUILDER & FİYAT GİZLEME
       function initBuilder() {
         state.builderItems = [];
         state.paymentMethod = 'cash';
+        document.getElementById('toggle-hide-prices').checked = false;
+        state.hidePricesInQuote = false;
+
         document.getElementById('builder-quote-code').textContent = 'BK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
 
         const sel = document.getElementById('builder-customer-select');
@@ -715,7 +736,6 @@
           sel.innerHTML = state.customers.map(c => `<option value="${c.id}">${c.company_name} (${c.authorized_person || ''})</option>`).join('');
         }
 
-        // Kredi Kartı 1-12 Taksit Seçeneklerini Yükle
         const ccSel = document.getElementById('builder-cc-installment');
         ccSel.innerHTML = [1,2,3,4,5,6,7,8,9,10,11,12].map(m => {
           const rate = state.ccRates[m] || 0;
@@ -727,7 +747,10 @@
         calculateQuote();
       }
 
-      // Envanterden Seçme Modalı
+      document.getElementById('toggle-hide-prices').onchange = function() {
+        state.hidePricesInQuote = this.checked;
+      };
+
       document.getElementById('btn-open-select-mat').onclick = () => {
         renderSelectMaterialModal('all');
         document.getElementById('modal-select-item').classList.remove('hidden');
@@ -747,17 +770,17 @@
         const list = gid === 'all' ? state.materials : state.materials.filter(m => m.group_id === gid);
 
         if (list.length === 0) {
-          lBox.innerHTML = '<div style="text-align:center; padding:16px; font-size:11px; color:#94a3b8;">Malzeme yok.</div>';
+          lBox.innerHTML = '<div style="text-align:center; padding:16px; color:#64748b;">Malzeme yok.</div>';
           return;
         }
 
         lBox.innerHTML = list.map(m => `
-          <div class="card btn-add-to-quote" data-id="${m.id}" style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; margin-bottom:6px; cursor:pointer;">
+          <div class="card btn-add-to-quote" data-id="${m.id}" style="display:flex; justify-content:space-between; align-items:center; padding:10px; margin-bottom:8px; cursor:pointer;">
             <div>
-              <strong style="font-size:12px; display:block;">${m.name}</strong>
-              <span style="font-size:10px; color:#64748b;">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
+              <strong style="font-size:13px; color:#fff; display:block;">${m.name}</strong>
+              <span style="font-size:11px; color:var(--orange); font-family:monospace;">${Number(m.sale_price).toLocaleString('tr-TR')} ₺</span>
             </div>
-            <span style="color:#2563eb; font-weight:900; font-size:16px;">+</span>
+            <span style="color:var(--orange); font-weight:900; font-size:18px;">+</span>
           </div>
         `).join('');
 
@@ -777,17 +800,17 @@
       function renderBuilderItems() {
         const box = document.getElementById('builder-items-box');
         if (state.builderItems.length === 0) {
-          box.innerHTML = '<div style="text-align:center; padding:12px; font-size:11px; color:#94a3b8;">Kalem seçilmedi.</div>';
+          box.innerHTML = '<div style="text-align:center; padding:14px; font-size:11px; color:#64748b;">Henüz malzeme eklenmedi.</div>';
           return;
         }
 
         box.innerHTML = state.builderItems.map((item, idx) => `
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:6px 8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="background:#0d121f; border:1px solid var(--card-border); border-radius:12px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
             <div style="flex:1;">
-              <strong style="font-size:12px; display:block;">${item.name}</strong>
-              <div style="display:flex; gap:6px; margin-top:3px;">
-                <input type="number" min="1" value="${item.quantity}" data-idx="${idx}" class="item-qty form-control" style="width:55px; padding:3px; text-align:center; font-weight:bold;">
-                <input type="number" value="${item.base_price}" data-idx="${idx}" class="item-price form-control" style="width:80px; padding:3px; text-align:right; font-weight:bold;">
+              <strong style="font-size:12px; color:#fff; display:block;">${item.name}</strong>
+              <div style="display:flex; gap:8px; margin-top:4px;">
+                <input type="number" min="1" value="${item.quantity}" data-idx="${idx}" class="item-qty form-control" style="width:55px; padding:4px; text-align:center; font-weight:bold;">
+                <input type="number" value="${item.base_price}" data-idx="${idx}" class="item-price form-control" style="width:85px; padding:4px; text-align:right; font-weight:bold; color:var(--orange);">
               </div>
             </div>
             <button class="btn btn-danger btn-del-b-item" data-idx="${idx}" style="padding:4px 8px; font-size:10px;">✕</button>
@@ -807,9 +830,9 @@
 
       function setPayment(method) {
         state.paymentMethod = method;
-        document.getElementById('pay-opt-cash').className = method === 'cash' ? 'btn btn-primary' : 'btn btn-secondary';
-        document.getElementById('pay-opt-card').className = method === 'credit_card' ? 'btn btn-primary' : 'btn btn-secondary';
-        document.getElementById('pay-opt-senet').className = method === 'promissory_note' ? 'btn btn-primary' : 'btn btn-secondary';
+        document.getElementById('pay-opt-cash').className = method === 'cash' ? 'btn btn-orange' : 'btn btn-secondary';
+        document.getElementById('pay-opt-card').className = method === 'credit_card' ? 'btn btn-orange' : 'btn btn-secondary';
+        document.getElementById('pay-opt-senet').className = method === 'promissory_note' ? 'btn btn-orange' : 'btn btn-secondary';
 
         document.getElementById('box-card-options').classList.toggle('hidden', method !== 'credit_card');
         document.getElementById('box-senet-options').classList.toggle('hidden', method !== 'promissory_note');
@@ -820,7 +843,6 @@
       document.getElementById('pay-opt-card').onclick = () => setPayment('credit_card');
       document.getElementById('pay-opt-senet').onclick = () => setPayment('promissory_note');
 
-      // Detaylı Hesaplama ve Ay Ay Taksitlendirme
       function calculateQuote() {
         const profitRate = Number(document.getElementById('builder-profit').value) || 0;
         const discount = Number(document.getElementById('builder-discount').value) || 0;
@@ -852,20 +874,15 @@
 
           for (let m = 1; m <= inst; m++) {
             const d = new Date(today.getFullYear(), today.getMonth() + (m - 1), today.getDate());
-            schedule.push({
-              installmentNo: m,
-              date: d.toLocaleDateString('tr-TR'),
-              amount: monthly
-            });
+            schedule.push({ installmentNo: m, date: d.toLocaleDateString('tr-TR'), amount: monthly });
           }
 
-          // Çizelgeyi ekrana bas
           document.getElementById('cc-schedule-box').innerHTML = `
-            <div style="font-weight:bold; margin-bottom:4px; color:#2563eb;">Kredi Kartı Ödeme Planı (${inst} Ay):</div>
+            <div style="font-weight:bold; margin-bottom:4px; color:var(--orange);">Kredi Kartı Planı (${inst} Ay):</div>
             ${schedule.map(s => `
-              <div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed #cbd5e1;">
+              <div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed #1f293d;">
                 <span>${s.installmentNo}. Taksit (${s.date})</span>
-                <strong style="font-family:monospace;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong>
+                <strong style="color:#fff; font-family:monospace;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong>
               </div>
             `).join('')}
           `;
@@ -880,20 +897,15 @@
 
           for (let m = 1; m <= months; m++) {
             const d = new Date(today.getFullYear(), today.getMonth() + m, today.getDate());
-            schedule.push({
-              installmentNo: m,
-              date: d.toLocaleDateString('tr-TR'),
-              amount: monthly
-            });
+            schedule.push({ installmentNo: m, date: d.toLocaleDateString('tr-TR'), amount: monthly });
           }
 
-          // Senet Planını ekrana bas
           document.getElementById('senet-schedule-box').innerHTML = `
-            <div style="font-weight:bold; margin-bottom:4px; color:#d97706;">Senet Vade Planı (Peşinat: ${down.toLocaleString('tr-TR')} ₺):</div>
+            <div style="font-weight:bold; margin-bottom:4px; color:var(--orange);">Senet Takvimi (Peşinat: ${down.toLocaleString('tr-TR')} ₺):</div>
             ${schedule.map(s => `
-              <div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed #cbd5e1;">
+              <div style="display:flex; justify-content:space-between; padding:2px 0; border-bottom:1px dashed #1f293d;">
                 <span>${s.installmentNo}. Senet (${s.date})</span>
-                <strong style="font-family:monospace;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong>
+                <strong style="color:#fff; font-family:monospace;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong>
               </div>
             `).join('')}
           `;
@@ -920,10 +932,10 @@
         document.getElementById(id).onchange = calculateQuote;
       });
 
-      // Teklif Kaydet
+      // TEKLİFİ KAYDET
       document.getElementById('btn-builder-save').onclick = () => {
         const custId = document.getElementById('builder-customer-select').value;
-        if (!custId) { alert('Müşteri seçmelisiniz.'); return; }
+        if (!custId) { alert('Lütfen müşteri seçiniz.'); return; }
         if (state.builderItems.length === 0) { alert('En az bir malzeme ekleyin.'); return; }
 
         const customer = state.customers.find(c => c.id === custId);
@@ -937,6 +949,7 @@
           status,
           issue_date: new Date().toLocaleDateString('tr-TR'),
           payment_method: state.paymentMethod,
+          hide_prices: state.hidePricesInQuote,
           vat_rate: Number(document.getElementById('builder-vat').value),
           subtotal: state.calculated.subtotal,
           discount_total: state.calculated.discount,
@@ -956,11 +969,11 @@
         state.quotes.unshift(newQuote);
         saveAll();
 
-        alert('Teklif kaydedildi!');
+        alert('Teklif başarıyla kaydedildi!');
         switchTab('quotes');
       };
 
-      // --- TEKLİF LİSTESİ VE PDF ---
+      // TEKLİFLER & PDF (FİYAT GİZLEME UYUMLU)
       function renderQuotes(filterText = '') {
         const box = document.getElementById('quotes-list-container');
         let list = state.quotes;
@@ -971,25 +984,28 @@
         }
 
         if (list.length === 0) {
-          box.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:11px;">Teklif bulunamadı.</div>';
+          box.innerHTML = '<div style="text-align:center; padding:24px; color:#64748b;">Teklif bulunamadı.</div>';
           return;
         }
 
         box.innerHTML = list.map((q, idx) => `
-          <div class="card" style="margin-bottom:8px; padding:10px;">
+          <div class="card" style="margin-bottom:8px; padding:12px;">
             <div style="display:flex; justify-content:space-between; align-items:start;">
               <div>
-                <strong style="font-size:13px; color:#0f172a;">${q.quote_number}</strong>
-                <p style="font-size:11px; color:#64748b; margin-top:2px;">${q.customer_snapshot ? q.customer_snapshot.company_name : '-'}</p>
-                <span class="status-badge st-${q.status || 'taslak'}" style="margin-top:4px;">${q.status || 'taslak'}</span>
+                <strong style="font-size:13px; color:#fff;">${q.quote_number}</strong>
+                <p style="font-size:11px; color:#94a3b8; margin-top:2px;">${q.customer_snapshot ? q.customer_snapshot.company_name : '-'}</p>
+                <div style="margin-top:4px;">
+                  <span class="status-badge st-${q.status || 'taslak'}">${q.status || 'taslak'}</span>
+                  ${q.hide_prices ? '<span style="font-size:9px; background:#334155; color:#cbd5e1; padding:2px 6px; border-radius:6px; margin-left:4px;">Fiyatsız Form</span>' : ''}
+                </div>
               </div>
-              <span style="font-weight:900; font-size:14px; font-family:monospace; color:#2563eb;">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
+              <span style="font-weight:900; font-size:14px; font-family:monospace; color:var(--orange);">${Number(q.grand_total).toLocaleString('tr-TR')} ₺</span>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f1f5f9; margin-top:8px; padding-top:6px; font-size:11px;">
-              <span style="color:#94a3b8;">${q.issue_date}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--card-border); margin-top:10px; padding-top:8px; font-size:11px;">
+              <span style="color:#64748b;">${q.issue_date}</span>
               <div style="display:flex; gap:6px;">
-                <button class="btn btn-primary btn-view-pdf" data-idx="${idx}" style="padding:4px 8px; font-size:10px;">PDF / Yazdır</button>
-                <button class="btn btn-danger btn-del-quote" data-idx="${idx}" style="padding:4px 8px; font-size:10px;">Sil</button>
+                <button class="btn btn-orange btn-view-pdf" data-idx="${idx}" style="padding:5px 10px; font-size:11px;">PDF / Yazdır</button>
+                <button class="btn btn-danger btn-del-quote" data-idx="${idx}" style="padding:5px 8px; font-size:11px;">Sil</button>
               </div>
             </div>
           </div>
@@ -1017,82 +1033,99 @@
 
       function openPdfModal(q) {
         const area = document.getElementById('printArea');
+        const hidePrices = q.hide_prices === true;
+
         area.innerHTML = `
           <div style="border-bottom:2px solid #090d16; padding-bottom:12px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <h2 style="font-size:18px; font-weight:900; color:#090d16;">BK YAPI İNŞAAT SANAYİ</h2>
-              <p style="font-size:10px; color:#64748b;">Mimarlık • Mühendislik • Taahhüt Hizmetleri</p>
+              <h2 style="font-size:18px; font-weight:900; color:#090d16;">BK YAPI İNŞAAT TAAHHÜT</h2>
+              <p style="font-size:10px; color:#64748b;">Mühendislik • Mimarlık • Malzeme Tedarik</p>
             </div>
             <div style="text-align:right;">
-              <strong style="font-size:12px; display:block;">${q.quote_number}</strong>
+              <strong style="font-size:12px; display:block; color:#090d16;">${q.quote_number}</strong>
               <span style="font-size:10px; color:#64748b;">Tarih: ${q.issue_date}</span>
             </div>
           </div>
 
-          <div style="background:#f8fafc; padding:8px 10px; border-radius:8px; margin-bottom:12px; font-size:11px; border:1px solid #e2e8f0;">
+          <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:12px; font-size:11px; border:1px solid #e2e8f0;">
             <strong style="display:block; color:#090d16; font-size:12px;">Sayın: ${q.customer_snapshot ? q.customer_snapshot.company_name : '-'}</strong>
             <span style="color:#64748b;">Yetkili: ${q.customer_snapshot?.authorized_person || '-'} • İletişim: ${q.customer_snapshot?.phone || '-'}</span>
-            ${q.customer_snapshot?.address ? `<p style="color:#94a3b8; font-size:10px;">Adres: ${q.customer_snapshot.address}</p>` : ''}
+            ${q.customer_snapshot?.address ? `<p style="color:#94a3b8; font-size:10px; margin-top:2px;">Şantiye / Adres: ${q.customer_snapshot.address}</p>` : ''}
           </div>
 
-          <table style="width:100%; border-collapse:collapse; margin-bottom:12px; font-size:11px;">
+          <table style="width:100%; border-collapse:collapse; margin-bottom:14px; font-size:11px;">
             <thead>
               <tr style="background:#f1f5f9; border-bottom:1px solid #cbd5e1; text-align:left;">
-                <th style="padding:6px;">Malzeme Açıklaması</th>
-                <th style="padding:6px; text-align:center;">Miktar</th>
-                <th style="padding:6px; text-align:right;">Birim Fiyat</th>
-                <th style="padding:6px; text-align:right;">Toplam</th>
+                <th style="padding:6px; color:#0f172a;">Sıra</th>
+                <th style="padding:6px; color:#0f172a;">Malzeme Tanımı</th>
+                <th style="padding:6px; text-align:center; color:#0f172a;">Miktar</th>
+                ${!hidePrices ? `
+                  <th style="padding:6px; text-align:right; color:#0f172a;">Birim Fiyat</th>
+                  <th style="padding:6px; text-align:right; color:#0f172a;">Toplam</th>
+                ` : ''}
               </tr>
             </thead>
             <tbody>
-              ${(q.items || []).map(it => `
+              ${(q.items || []).map((it, idx) => `
                 <tr style="border-bottom:1px solid #e2e8f0;">
-                  <td style="padding:6px;">${it.name}</td>
-                  <td style="padding:6px; text-align:center;">${it.quantity}</td>
-                  <td style="padding:6px; text-align:right;">${Number(it.unit_price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td>
-                  <td style="padding:6px; text-align:right; font-weight:bold;">${Number(it.total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td>
+                  <td style="padding:6px; color:#64748b;">${idx + 1}</td>
+                  <td style="padding:6px; color:#0f172a; font-weight:600;">${it.name}</td>
+                  <td style="padding:6px; text-align:center; color:#0f172a;">${it.quantity}</td>
+                  ${!hidePrices ? `
+                    <td style="padding:6px; text-align:right; color:#0f172a;">${Number(it.unit_price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td>
+                    <td style="padding:6px; text-align:right; font-weight:bold; color:#0f172a;">${Number(it.total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td>
+                  ` : ''}
                 </tr>
               `).join('')}
             </tbody>
           </table>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom:12px;">
-            <div>
-              <strong style="font-size:10px; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;">Ödeme Koşulları</strong>
-              <p style="font-size:11px; font-weight:bold; color:#0f172a;">
-                ${q.payment_method === 'cash' ? 'Peşin Ödeme' : q.payment_method === 'credit_card' ? 'Kredi Kartı Taksitli' : 'Senetli Satış'}
-              </p>
-              ${q.schedule && q.schedule.length > 0 ? `
-                <div style="margin-top:6px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
-                  <table style="width:100%; font-size:9px; border-collapse:collapse;">
-                    <thead style="background:#f1f5f9;"><tr><th style="padding:2px 4px; text-align:left;">Vade</th><th style="padding:2px 4px; text-align:right;">Tutar</th></tr></thead>
-                    <tbody>
-                      ${q.schedule.map(s => `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:2px 4px;">${s.installmentNo}. Taksit (${s.date})</td><td style="padding:2px 4px; text-align:right; font-weight:bold;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td></tr>`).join('')}
-                    </tbody>
-                  </table>
-                </div>
-              ` : ''}
-            </div>
+          ${!hidePrices ? `
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom:12px;">
+              <div>
+                <strong style="font-size:10px; text-transform:uppercase; color:#64748b; display:block; margin-bottom:4px;">Ödeme Koşulları</strong>
+                <p style="font-size:11px; font-weight:bold; color:#0f172a;">
+                  ${q.payment_method === 'cash' ? 'Peşin Ödeme' : q.payment_method === 'credit_card' ? 'Kredi Kartı Taksitli' : 'Senetli Satış'}
+                </p>
+                ${q.schedule && q.schedule.length > 0 ? `
+                  <div style="margin-top:6px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
+                    <table style="width:100%; font-size:9px; border-collapse:collapse;">
+                      <thead style="background:#f1f5f9;"><tr><th style="padding:2px 4px; text-align:left;">Vade</th><th style="padding:2px 4px; text-align:right;">Tutar</th></tr></thead>
+                      <tbody>
+                        ${q.schedule.map(s => `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:2px 4px;">${s.installmentNo}. Taksit (${s.date})</td><td style="padding:2px 4px; text-align:right; font-weight:bold;">${s.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</td></tr>`).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                ` : ''}
+              </div>
 
-            <div style="font-size:11px; space-y:3px; text-align:right;">
-              <div>Ara Toplam: <strong>${Number(q.subtotal).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong></div>
-              ${q.discount_total > 0 ? `<div style="color:#e11d48;">İskonto: -${Number(q.discount_total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</div>` : ''}
-              <div>KDV: <strong>${Number(q.vat_total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong></div>
-              ${q.interest_total > 0 ? `<div>Vade Farkı: <strong>+${Number(q.interest_total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺</strong></div>` : ''}
-              <div style="font-size:13px; font-weight:900; color:#090d16; border-top:1px solid #090d16; padding-top:4px; margin-top:4px;">
-                Genel Toplam: ${Number(q.grand_total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+              <div style="font-size:11px; space-y:3px; text-align:right;">
+                <div>Ara Toplam: <strong>${Number(q.subtotal).toLocaleString('tr-TR')} ₺</strong></div>
+                ${q.discount_total > 0 ? `<div style="color:#e11d48;">İskonto: -${Number(q.discount_total).toLocaleString('tr-TR')} ₺</div>` : ''}
+                <div>KDV: <strong>${Number(q.vat_total).toLocaleString('tr-TR')} ₺</strong></div>
+                ${q.interest_total > 0 ? `<div>Vade Farkı: <strong>+${Number(q.interest_total).toLocaleString('tr-TR')} ₺</strong></div>` : ''}
+                <div style="font-size:13px; font-weight:900; color:#090d16; border-top:1px solid #090d16; padding-top:4px; margin-top:4px;">
+                  Genel Toplam: ${Number(q.grand_total).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺
+                </div>
               </div>
             </div>
-          </div>
+          ` : `
+            <div style="background:#fffbeb; border:1px solid #fde68a; padding:10px; border-radius:8px; font-size:11px; color:#92400e; margin-bottom:12px;">
+              * Bu belge keşif ve malzeme metraj mutabakatı amacıyla düzenlenmiştir.
+            </div>
+          `}
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; text-align: center; font-size: 10px;">
-            <div><p style="font-weight:bold;">BK YAPI Yetkilisi</p><div style="height:35px;"></div><p style="color:#94a3b8;">Kaşe / İmza</p></div>
-            <div><p style="font-weight:bold;">Müşteri Onayı</p><div style="height:35px;"></div><p style="color:#94a3b8;">Kaşe / İmza</p></div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 35px; text-align: center; font-size: 10px;">
+            <div><p style="font-weight:bold; color:#0f172a;">BK YAPI Yetkilisi</p><div style="height:35px;"></div><p style="color:#94a3b8;">Kaşe / İmza</p></div>
+            <div><p style="font-weight:bold; color:#0f172a;">Müşteri Onayı</p><div style="height:35px;"></div><p style="color:#94a3b8;">Kaşe / İmza</p></div>
           </div>
         `;
 
         document.getElementById('btn-pdf-whatsapp').onclick = () => {
-          const text = `Sayın ${q.customer_snapshot?.company_name},\nBK YAPI olarak hazırladığımız ${q.quote_number} numaralı teklifimiz ekte bilgilerinize sunulmuştur.\nGenel Toplam: ${Number(q.grand_total).toLocaleString('tr-TR')} TL`;
+          let text = `Sayın ${q.customer_snapshot?.company_name},\nBK YAPI olarak hazırladığımız ${q.quote_number} numaralı teklif formu ekte bilgilerinize sunulmuştur.`;
+          if (!hidePrices) {
+            text += `\nGenel Toplam: ${Number(q.grand_total).toLocaleString('tr-TR')} TL`;
+          }
           const phone = (q.customer_snapshot?.phone || '').replace(/[^0-9]/g, '');
           window.open(`https://wa.me/90${phone}?text=${encodeURIComponent(text)}`);
         };
@@ -1102,24 +1135,22 @@
 
       document.getElementById('btn-close-pdf').onclick = () => document.getElementById('modal-pdf').classList.add('hidden');
 
-      // --- AYARLAR & YEDEKLEME ---
+      // AYARLAR
       document.getElementById('setting-senet-rate').value = state.senetRate;
       document.getElementById('btn-save-settings').onclick = () => {
         state.senetRate = parseFloat(document.getElementById('setting-senet-rate').value) || 2.5;
         saveAll();
-        alert('Ayarlar kaydedildi.');
+        alert('Ayarlar güncellendi.');
       };
 
-      // Yedek İndirme (JSON Dışa Aktar)
       document.getElementById('btn-export-data').onclick = () => {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
         const dlAnchor = document.createElement('a');
         dlAnchor.setAttribute("href", dataStr);
-        dlAnchor.setAttribute("download", `bkyapi_yedek_${new Date().toISOString().split('T')[0]}.json`);
+        dlAnchor.setAttribute("download", `bkyapi_erp_${new Date().toISOString().split('T')[0]}.json`);
         dlAnchor.click();
       };
 
-      // Yedek Yükleme
       document.getElementById('btn-import-trigger').onclick = () => document.getElementById('file-import-input').click();
       document.getElementById('file-import-input').onchange = (e) => {
         const file = e.target.files[0];
@@ -1134,16 +1165,15 @@
               alert('Yedek başarıyla yüklendi!');
               location.reload();
             } else {
-              alert('Geçersiz yedek dosyası.');
+              alert('Geçersiz yedek.');
             }
           } catch(err) {
-            alert('Dosya okuma hatası.');
+            alert('Dosya hatası.');
           }
         };
         reader.readAsText(file);
       };
 
-      // Başlangıç
       renderDashboard();
     });
   </script>
